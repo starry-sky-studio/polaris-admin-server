@@ -4,7 +4,9 @@ import { MyLogger } from './winston/logger'
 import { WINSTON_LOGGER_TOKEN } from './winston/winston.module'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    cors: true
+  })
   app.useLogger(app.get(WINSTON_LOGGER_TOKEN))
 
   await app.listen(3000)
