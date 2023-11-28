@@ -1,5 +1,5 @@
 # 生成器图像
-FROM node:lts-slim
+FROM node:20.0-alpine3.14 as build-stage
 
 # 为存储代码的应用程序创建工作目录
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 
 RUN pnpm build
 
-FROM node:lts-slim
+FROM node:20.0-alpine3.14 as build-stage
 
 WORKDIR /app
 

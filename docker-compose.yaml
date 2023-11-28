@@ -1,17 +1,18 @@
 version: '3.8'
 services:
-   polaris-nest-app::
+  polaris-nest-app:
     build:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - postgres
+      - polaris-admin-postgres
     volumes:
       - ./src:/app/src
 
+
   postgres:
     container_name: polaris-admin-postgres
-    image: polaris-containers:latest
+    image: polaris-image:15
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
@@ -26,7 +27,4 @@ volumes:
   postgres_data:
 
 
-
-networks:
-   nestjs:
 
