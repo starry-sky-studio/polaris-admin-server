@@ -5,6 +5,9 @@ import { WinstonModule } from './winston/winston.module'
 import { transports, format } from 'winston'
 import * as chalk from 'chalk'
 
+import { JwtModule } from '@nestjs/jwt'
+import { AuthModule } from './auth/auth.module';
+
 @Module({
   imports: [
     WinstonModule.forRoot({
@@ -26,9 +29,33 @@ import * as chalk from 'chalk'
           dirname: 'log'
         })
       ]
-    })
+    }),
+
+    JwtModule.register({
+      secret: 'guang',
+      signOptions: {
+        expiresIn: '7d'
+      }
+    }),
+
+    AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [
+    AppService
+    // {
+    //   provide: 'REDIS_CLIENT',
+    //   async useFactory() {
+    //     const client = createClient({
+    //       socket: {
+    //         host: 'locales',
+    //         port: 6379
+    //       }
+    //     })
+    //     await client.connect()
+    //     return client
+    //   }
+    // }
+  ]
 })
 export class AppModule {}

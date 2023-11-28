@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+   polaris-nest-app::
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src
+
+  postgres:
+    container_name: polaris-admin-postgres
+    image: polaris-containers:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+
+
+
+volumes:
+  postgres_data:
+
+
+
+networks:
+   nestjs:
+
