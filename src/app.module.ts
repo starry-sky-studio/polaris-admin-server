@@ -7,7 +7,6 @@ import * as chalk from 'chalk'
 
 import { JwtModule } from '@nestjs/jwt'
 import { AuthModule } from './auth/auth.module';
-
 @Module({
   imports: [
     WinstonModule.forRoot({
@@ -17,7 +16,7 @@ import { AuthModule } from './auth/auth.module';
           format: format.combine(
             format.colorize(),
             format.printf(({ context, level, message, time }) => {
-              const appStr = chalk.green(`[NEST]`)
+              const appStr = chalk.green('[NEST]')
               const contextStr = chalk.yellow(`[${context}]`)
               return `${appStr} ${time} ${level} ${contextStr} ${message} `
             })
@@ -41,21 +40,6 @@ import { AuthModule } from './auth/auth.module';
     AuthModule
   ],
   controllers: [AppController],
-  providers: [
-    AppService
-    // {
-    //   provide: 'REDIS_CLIENT',
-    //   async useFactory() {
-    //     const client = createClient({
-    //       socket: {
-    //         host: 'locales',
-    //         port: 6379
-    //       }
-    //     })
-    //     await client.connect()
-    //     return client
-    //   }
-    // }
-  ]
+  providers: [AppService]
 })
 export class AppModule {}

@@ -1,8 +1,8 @@
-import { DynamicModule, Global, Module } from '@nestjs/common'
-import { LoggerOptions, createLogger } from 'winston'
-import { MyLogger } from './logger'
+import { DynamicModule, Global, Module } from "@nestjs/common";
+import { LoggerOptions, createLogger } from "winston";
+import { MyLogger } from "./logger";
 
-export const WINSTON_LOGGER_TOKEN = 'WINSTON_LOGGER'
+export const WINSTON_LOGGER_TOKEN = "WINSTON_LOGGER";
 
 @Global()
 @Module({})
@@ -13,10 +13,10 @@ export class WinstonModule {
       providers: [
         {
           provide: WINSTON_LOGGER_TOKEN,
-          useValue: new MyLogger(options)
-        }
+          useValue: new MyLogger(options),
+        },
       ],
-      exports: [WINSTON_LOGGER_TOKEN]
-    }
+      exports: [WINSTON_LOGGER_TOKEN],
+    };
   }
 }

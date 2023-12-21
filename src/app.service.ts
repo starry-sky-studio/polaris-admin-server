@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { RedisClientType } from 'redis'
+import { Inject, Injectable } from "@nestjs/common";
+import { RedisClientType } from "redis";
 
 @Injectable()
 export class AppService {
@@ -9,9 +9,9 @@ export class AppService {
   getHello() {
     // const value = await this.redisClient.keys('*')
     // console.log(value)
-    return 'Hello 1111'
+    return "Hello 1111";
   }
   test(): string {
-    return 'test'
+    return "test";
   }
 }

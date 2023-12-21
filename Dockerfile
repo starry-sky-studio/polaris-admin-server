@@ -1,7 +1,5 @@
-# 生成器图像
-FROM node:20.0-alpine3.14 as build-stage
+FROM node:lts-slim AS builder
 
-# 为存储代码的应用程序创建工作目录
 WORKDIR /app
 
 COPY package.json ./
@@ -17,7 +15,7 @@ COPY . .
 
 RUN pnpm build
 
-FROM node:20.0-alpine3.14 as build-stage
+FROM node:lts-slim
 
 WORKDIR /app
 
@@ -28,26 +26,4 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-CMD [ "npm", "run","prod" ]
-
-
-
-
-# FROM node:18
-
-# WORKDIR /app
-
-# COPY package.json .
-
-# RUN npm config set registry https://registry.npmmirror.com/
-
-# RUN npm install
-
-# COPY . .
-
-# RUN npm run build
-
-# EXPOSE 3000
-
-# CMD [ "node", "./dist/main.js" ]
-
+CMD [ "npm", "run", "prod" ]

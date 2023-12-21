@@ -2,7 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native"]
+  previewFeatures = ["metrics"]
 }
 
 datasource db {
@@ -10,18 +12,206 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
+//用户
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id          Int       @id @default(autoincrement())
+  username    String    @unique @db.VarChar(30)
+  nickName    String?   @map("nick_name") @db.VarChar(50)
+  password    String?   @db.VarChar(100)
+  email       String?   @unique @db.VarChar(50)
+  phoneNumber String?   @map("phone_number") @db.VarChar(25)
+  avatarUrl   String?   @map("avatar_url") @db.VarChar(100)
+  gender      String?   @db.VarChar(100)
+  biography   String?   @db.VarChar(500)
+  country     String?   @db.VarChar(25)
+  province    String?   @db.VarChar(25)
+  city        String?   @db.VarChar(25)
+  website     String?   @db.VarChar(50)
+  enabled     Boolean   @default(true)
+  birthDate   DateTime? @map("birth_date") @db.Date
+  /// 用户 - 认证
+  auths       Auth[]
+  /// 用户 - 角色
+  // userRoles   UserRole[]
+  /// 创建时间
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy   Int?      @map("created_by")
+  /// 更新时间
+  updatedAt   DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy   Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy   Int?      @map("deleted_by")
+
+  @@map("system_user")
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+/// 认证类型
+enum AuthType {
+  USERNAME
+  PHONE_NUMBER
+  EMAIL
+  GITHUB
+  GOOGLE
+  WECHAT
+  ALIPAY
 }
+
+//认证
+model Auth {
+  id           Int      @id @default(autoincrement())
+  authType     AuthType @map("auth_type'")
+  openId       String   @map("open_id") @db.VarChar(50)
+  accessToken  String?  @map("access_token") @db.VarChar(255)
+  refreshToken String?  @map("refresh_token") @db.VarChar(255)
+
+  /// 关联到用户(User)实体，表示该身份验证属于哪个用户。使用了外键关系，关联字段为userId。
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
+
+  @@unique([authType, openId])
+  @@map("system_auth")
+}
+
+// /// 角色
+// model Role {
+//   id   Int    @id @default(autoincrement())
+//   //角色编码
+//   code String @unique @db.Varchar(50)
+
+//   enabled Boolean @default(true)
+
+//   /// 用户 - 角色
+//   userRoles UserRole[]
+//   /// 创建时间
+//   createdAt DateTime?  @default(now()) @map("created_at") @db.Timestamptz(3)
+//   /// 创建人
+//   createdBy Int?       @map("created_by")
+//   /// 更新时间
+//   updatedAt DateTime?  @updatedAt @map("updated_at") @db.Timestamptz(3)
+//   /// 更新人
+//   updatedBy Int?       @map("updated_by")
+//   /// 删除时间
+//   deletedAt DateTime?  @map("deleted_at") @db.Timestamptz(3)
+//   /// 删除人
+//   deletedBy Int?       @map("deleted_by")
+
+//   @@map("system_role")
+// }
+
+// model UserRole {
+//   id Int @id @default(autoincrement())
+
+//   user User @relation(fields: [userId], references: [id])
+
+//   userId Int @map("user_id")
+
+//   role Role @relation(fields: [roleId], references: [id])
+
+//   /// 角色 ID
+//   roleId Int @map("role_id")
+
+//   /// 创建时间
+//   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+//   /// 创建人
+//   createdBy Int?      @map("created_by")
+//   /// 更新时间
+//   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+//   /// 更新人
+//   updatedBy Int?      @map("updated_by")
+//   /// 删除时间
+//   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+//   /// 删除人
+//   deletedBy Int?      @map("deleted_by")
+
+//   @@map("system_user_role")
+// }
+
+// /// 菜单
+// model MenuItem {
+//   id            Int     @id @default(autoincrement())
+//   path          String? @db.Varchar(255)
+//   icon          String? @db.Varchar(50)
+//   componentPath String? @map("component_path") @db.VarChar(255)
+//   code          String? @db.VarChar(255)
+//   hidden        Boolean @default(false)
+//   enabled       Boolean @default(true)
+
+//   /// 创建时间
+//   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+//   /// 创建人
+//   createdBy Int?      @map("created_by")
+//   /// 更新时间
+//   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+//   /// 更新人
+//   updatedBy Int?      @map("updated_by")
+//   /// 删除时间
+//   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+//   /// 删除人
+//   deletedBy Int?      @map("deleted_by")
+
+//   @@map("system_menu_item")
+// }
+
+// model DictionaryItem {
+//   id      Int     @id @default(autoincrement())
+//   key     String  @unique @db.Varchar(100)
+//   value   String? @db.Varchar(255)
+//   enabled Boolean @default(true)
+
+//   dictionary   Dictionary @relation(fields: [dictionaryId], references: [id])
+//   dictionaryId Int        @map("dictionary_id")
+
+//   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+//   /// 创建人
+//   createdBy Int?      @map("created_by")
+//   /// 更新时间
+//   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+//   /// 更新人
+//   updatedBy Int?      @map("updated_by")
+//   /// 删除时间
+//   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+//   /// 删除人
+//   deletedBy Int?      @map("deleted_by")
+
+//   @@map("system_dictionary_item")
+// }
+
+// // 字典
+// model Dictionary {
+//   id              Int              @id @default(autoincrement())
+//   code            String           @unique @db.Varchar(50)
+//   enabled         Boolean          @default(true)
+//   dictionaryItems DictionaryItem[]
+
+//   /// 创建时间
+//   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+//   /// 创建人
+//   createdBy Int?      @map("created_by")
+//   /// 更新时间
+//   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+//   /// 更新人
+//   updatedBy Int?      @map("updated_by")
+//   /// 删除时间
+//   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+//   /// 删除人
+//   deletedBy Int?      @map("deleted_by")
+
+//   @@map("system_dictionary")
+// }

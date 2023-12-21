@@ -1,18 +1,23 @@
 version: '3.8'
 services:
-  polaris-nest-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - polaris-admin-postgres
-    volumes:
-      - ./src:/app/src
-
+  # api:
+  #   container_name: dolphin-admin-nest
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 3000:3000
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - postgres
+  #     - mongodb
+  #     - redis
+  #   command: bash -c "npm run prisma:migrate:dev"
 
   postgres:
     container_name: polaris-admin-postgres
-    image: polaris-image:15
+    image: postgres:16
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
@@ -23,8 +28,18 @@ services:
 
 
 
+  redis:
+    container_name: polaris-admin-redis
+    image: redis
+    command: [ "--requirepass", "${REDIS_PASSWORD}" ]
+    volumes:
+      - redis_data:/data
+    restart: always
+    ports:
+      - 6379:6379
+    env_file:
+      - .env
+
 volumes:
   postgres_data:
-
-
-
+  redis_data:
