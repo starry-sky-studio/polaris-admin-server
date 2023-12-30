@@ -89,31 +89,109 @@ model Auth {
   @@map("system_auth")
 }
 
-// /// 角色
-// model Role {
-//   id   Int    @id @default(autoincrement())
-//   //角色编码
-//   code String @unique @db.Varchar(50)
+/// 角色
+model Role {
+  id   Int    @id @default(autoincrement())
+  //角色编码
+  code String @unique @db.Varchar(50)
 
-//   enabled Boolean @default(true)
+  label String @db.Varchar(50)
 
-//   /// 用户 - 角色
-//   userRoles UserRole[]
-//   /// 创建时间
-//   createdAt DateTime?  @default(now()) @map("created_at") @db.Timestamptz(3)
-//   /// 创建人
-//   createdBy Int?       @map("created_by")
-//   /// 更新时间
-//   updatedAt DateTime?  @updatedAt @map("updated_at") @db.Timestamptz(3)
-//   /// 更新人
-//   updatedBy Int?       @map("updated_by")
-//   /// 删除时间
-//   deletedAt DateTime?  @map("deleted_at") @db.Timestamptz(3)
-//   /// 删除人
-//   deletedBy Int?       @map("deleted_by")
+  remark String? @db.Varchar(500)
 
-//   @@map("system_role")
-// }
+  enabled Boolean @default(true)
+
+  /// 用户 - 角色
+  userRoles UserRole[]
+
+  ///角色 - 菜单
+  roleMenuItems RoleMenuItem[]
+
+  ///角色 - 部门
+  roleDepartments RoleDepartment[]
+
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
+
+  @@map("system_role")
+}
+
+/// 用户 - 角色
+model UserRole {
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id])
+
+  userId Int @map("user_id")
+
+  role Role @relation(fields: [roleId], references: [id])
+
+  roleId Int @map("role_id")
+
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
+
+  @@map("system_user_role")
+}
+
+/// 菜单
+model MenuItem {
+  id            Int            @id @default(autoincrement())
+  type          String?        @db.Varchar(50)
+  path          String?        @db.Varchar(255)
+  icon          String?        @db.Varchar(50)
+  componentPath String?        @map("component_path") @db.Varchar(255)
+  code          String?        @db.Varchar(255)
+  hidden        Boolean        @default(false)
+  lable         String         @db.Varchar(50)
+  remark        String         @db.Varchar(500)
+  enabled       Boolean        @default(true)
+  sort          Int            @default(0)
+  ///父级菜单
+  parent        MenuItem?      @relation("MenuItemToParent", files: [parentId], references: [id])
+  parentId      Int?           @map("parent_id")
+  children      MenuItem[]     @relation("MenuItemToParent")
+  roleMenuItems RoleMenuItem[]
+
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
+
+  @@map("system_menu_item")
+}
+
+/// 角色-菜单
+
+//model RoleMenuItem
 
 // model UserRole {
 //   id Int @id @default(autoincrement())

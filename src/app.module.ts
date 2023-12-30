@@ -1,45 +1,45 @@
-import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { WinstonModule } from './winston/winston.module'
-import { transports, format } from 'winston'
-import * as chalk from 'chalk'
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { WinstonModule } from "./winston/winston.module";
+import { transports, format } from "winston";
+import * as chalk from "chalk";
 
-import { JwtModule } from '@nestjs/jwt'
-import { AuthModule } from './auth/auth.module';
+import { JwtModule } from "@nestjs/jwt";
+import { AuthModule } from "./auth/auth.module";
 @Module({
   imports: [
     WinstonModule.forRoot({
-      level: 'debug',
+      level: "debug",
       transports: [
         new transports.Console({
           format: format.combine(
             format.colorize(),
             format.printf(({ context, level, message, time }) => {
-              const appStr = chalk.green('[NEST]')
-              const contextStr = chalk.yellow(`[${context}]`)
-              return `${appStr} ${time} ${level} ${contextStr} ${message} `
-            })
-          )
+              const appStr = chalk.green("[NEST]");
+              const contextStr = chalk.yellow(`[${context}]`);
+              return `${appStr} ${time} ${level} ${contextStr} ${message} `;
+            }),
+          ),
         }),
         new transports.File({
           format: format.combine(format.timestamp(), format.json()),
-          filename: '111.log',
-          dirname: 'log'
-        })
-      ]
+          filename: "111.log",
+          dirname: "log",
+        }),
+      ],
     }),
 
     JwtModule.register({
-      secret: 'guang',
+      secret: "",
       signOptions: {
-        expiresIn: '7d'
-      }
+        expiresIn: "7d",
+      },
     }),
 
-    AuthModule
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
 export class AppModule {}
