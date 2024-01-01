@@ -155,55 +155,23 @@ model UserRole {
 }
 
 /// 菜单
-model MenuItem {
-  id            Int            @id @default(autoincrement())
-  type          String?        @db.Varchar(50)
-  path          String?        @db.Varchar(255)
-  icon          String?        @db.Varchar(50)
-  componentPath String?        @map("component_path") @db.Varchar(255)
-  code          String?        @db.Varchar(255)
-  hidden        Boolean        @default(false)
-  lable         String         @db.Varchar(50)
-  remark        String         @db.Varchar(500)
-  enabled       Boolean        @default(true)
-  sort          Int            @default(0)
-  ///父级菜单
-  parent        MenuItem?      @relation("MenuItemToParent", files: [parentId], references: [id])
-  parentId      Int?           @map("parent_id")
-  children      MenuItem[]     @relation("MenuItemToParent")
-  roleMenuItems RoleMenuItem[]
-
-  /// 创建时间
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
-  /// 创建人
-  createdBy Int?      @map("created_by")
-  /// 更新时间
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
-  /// 更新人
-  updatedBy Int?      @map("updated_by")
-  /// 删除时间
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
-  /// 删除人
-  deletedBy Int?      @map("deleted_by")
-
-  @@map("system_menu_item")
-}
-
-/// 角色-菜单
-
-//model RoleMenuItem
-
-// model UserRole {
-//   id Int @id @default(autoincrement())
-
-//   user User @relation(fields: [userId], references: [id])
-
-//   userId Int @map("user_id")
-
-//   role Role @relation(fields: [roleId], references: [id])
-
-//   /// 角色 ID
-//   roleId Int @map("role_id")
+// model MenuItem {
+//   id            Int            @id @default(autoincrement())
+//   type          String?        @db.Varchar(50)
+//   path          String?        @db.Varchar(255)
+//   icon          String?        @db.Varchar(50)
+//   componentPath String?        @map("component_path") @db.Varchar(255)
+//   code          String?        @db.Varchar(255)
+//   hidden        Boolean        @default(false)
+//   lable         String         @db.Varchar(50)
+//   remark        String         @db.Varchar(500)
+//   enabled       Boolean        @default(true)
+//   sort          Int            @default(0)
+//   ///父级菜单
+//   parent        MenuItem?      @relation("MenuItemToParent", files: [parentId], references: [id])
+//   parentId      Int?           @map("parent_id")
+//   children      MenuItem[]     @relation("MenuItemToParent")
+//   roleMenuItems RoleMenuItem[]
 
 //   /// 创建时间
 //   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -218,8 +186,40 @@ model MenuItem {
 //   /// 删除人
 //   deletedBy Int?      @map("deleted_by")
 
-//   @@map("system_user_role")
+//   @@map("system_menu_item")
 // }
+
+// 角色-菜单
+
+// model RoleMenuItem
+
+model UserRole {
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id])
+
+  userId Int @map("user_id")
+
+  role Role @relation(fields: [roleId], references: [id])
+
+  /// 角色 ID
+  roleId Int @map("role_id")
+
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
+
+  @@map("system_user_role")
+}
 
 // /// 菜单
 // model MenuItem {
@@ -247,49 +247,82 @@ model MenuItem {
 //   @@map("system_menu_item")
 // }
 
-// model DictionaryItem {
-//   id      Int     @id @default(autoincrement())
-//   key     String  @unique @db.Varchar(100)
-//   value   String? @db.Varchar(255)
-//   enabled Boolean @default(true)
+model Department {
+  id        Int          @id @default(autoincrement())
+  leader    String?      @db.VarChar(50)
+  label     String       @db.VarChar(50)
+  remark    String?      @db.VarChar(50)
+  enabled   Boolean      @default(true)
+  sort      Int          @default(0)
+  parentIds Int[]        @map("parent_Ids")
+  parent    Department?  @relation("DepartmentToParent", fields: [parentId], references: [id])
+  parentId  Int?
+  children  Department[]
 
-//   dictionary   Dictionary @relation(fields: [dictionaryId], references: [id])
-//   dictionaryId Int        @map("dictionary_id")
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
 
-//   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
-//   /// 创建人
-//   createdBy Int?      @map("created_by")
-//   /// 更新时间
-//   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
-//   /// 更新人
-//   updatedBy Int?      @map("updated_by")
-//   /// 删除时间
-//   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
-//   /// 删除人
-//   deletedBy Int?      @map("deleted_by")
+  @@map("system_department")
+}
 
-//   @@map("system_dictionary_item")
-// }
+/// 字典
+model Dictionary {
+  id              Int              @id @default(autoincrement())
+  code            String           @unique @db.VarChar(50)
+  label           String           @db.VarChar(50)
+  remark          String?          @db.VarChar(500)
+  enabled         Boolean          @default(true)
+  dictionaryItems DictionaryItem[]
+  /// 创建时间
+  createdAt       DateTime?        @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy       Int?             @map("created_by")
+  /// 更新时间
+  updatedAt       DateTime?        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy       Int?             @map("updated_by")
+  /// 删除时间
+  deletedAt       DateTime?        @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy       Int?             @map("deleted_by")
 
-// // 字典
-// model Dictionary {
-//   id              Int              @id @default(autoincrement())
-//   code            String           @unique @db.Varchar(50)
-//   enabled         Boolean          @default(true)
-//   dictionaryItems DictionaryItem[]
+  @@map("system_dictionary")
+}
 
-//   /// 创建时间
-//   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
-//   /// 创建人
-//   createdBy Int?      @map("created_by")
-//   /// 更新时间
-//   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
-//   /// 更新人
-//   updatedBy Int?      @map("updated_by")
-//   /// 删除时间
-//   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
-//   /// 删除人
-//   deletedBy Int?      @map("deleted_by")
+/// 字典数据
+model DictionaryItem {
+  id           Int        @id @default(autoincrement())
+  value        String     @db.VarChar(255)
+  label        String     @db.VarChar(50)
+  remark       String?    @db.VarChar(500)
+  enable       Boolean    @default(true)
+  sort         Int        @default(0)
+  /// 字典
+  dictionary   Dictionary @relation(fields: [dictionaryId], references: [id])
+  /// 字典 ID
+  dictionaryId Int        @map("dictionary_id")
+  /// 创建时间
+  createdAt    DateTime?  @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy    Int?       @map("created_by")
+  /// 更新时间
+  updatedAt    DateTime?  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy    Int?       @map("updated_by")
+  /// 删除时间
+  deletedAt    DateTime?  @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy    Int?       @map("deleted_by")
 
-//   @@map("system_dictionary")
-// }
+  @@map("system_dictionary_item")
+}
