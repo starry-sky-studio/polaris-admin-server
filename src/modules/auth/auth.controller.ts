@@ -5,36 +5,40 @@ import {
   ParseEnumPipe,
   Post,
   Query,
-  UseGuards,
-} from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { LoginDto, SignupDto } from "./dto";
-import { LoginType } from "@/enums";
-import { LocalAuthGuard } from "@/guard";
+  UseGuards
+} from '@nestjs/common'
+import { AuthService } from './auth.service'
+import { LoginDto, SignupDto } from './dto'
+import { LoginType } from '@/enums'
+import { LocalAuthGuard } from '@/guard'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
-@Controller("auth")
+@ApiTags('权限认证')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({ summary: '登录' })
   @UseGuards(LocalAuthGuard)
-  @Post("login")
+  @Post('login')
   login(
     @Body() loginDto: LoginDto,
     @Query(
-      "type",
+      'type',
       new ParseEnumPipe(LoginType, {
         exceptionFactory: () => {
-          throw new NotImplementedException("请选择正确的登录类型");
-        },
-      }),
+          throw new NotImplementedException('请选择正确的登录类型')
+        }
+      })
     )
-    type: string,
+    type: string
   ) {
-    return this.authService.login(loginDto, type);
+    return this.authService.login(loginDto, type)
   }
 
-  @Post("signup")
+  @ApiOperation({ summary: '注册' })
+  @Post('signup')
   signup(@Body() signupDto: SignupDto) {
-    return this.authService.signup(signupDto);
+    return this.authService.signup(signupDto)
   }
 }

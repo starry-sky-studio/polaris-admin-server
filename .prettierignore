@@ -1,0 +1,10 @@
+build
+coverage
+uploads
+node_modules
+.husky
+prisma
+dist
+pnpm-lock.yaml
+
+
