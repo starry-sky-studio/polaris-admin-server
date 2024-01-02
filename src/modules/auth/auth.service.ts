@@ -1,8 +1,8 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { LoginDto, SignupDto } from './dto'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { LoginDto } from './dto'
 import { PrismaService } from 'src/shared/prisma/prisma.service'
 import { UserService } from '../user/user.service'
-import { compare, hash } from '@node-rs/bcrypt'
+import { compare } from '@node-rs/bcrypt'
 import { LoginType } from 'src/enums'
 import { UserVo } from '../user/vo'
 import { plainToClass } from 'class-transformer'
@@ -10,6 +10,7 @@ import { JwtPayload } from '@/interceptors'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import { LoginVo } from './vo'
+import { CreateUserDto } from '../user/dto/create-user.dto'
 
 @Injectable()
 export class AuthService {
@@ -75,22 +76,12 @@ export class AuthService {
     }
   }
 
-  async signup(signupDto: SignupDto) {
-    const { username, password } = signupDto
-    const findUser = await this.prismaService.user.findFirst({
-      where: {
-        username,
-        deletedAt: null
-      }
-    })
-    if (findUser) throw new HttpException('用户已存在', HttpStatus.BAD_REQUEST)
-
-    const passwordHash = await hash(password, 12)
-    const user = this.userService.create({
-      password: passwordHash,
-      username
-    })
-
-    return user
+  async signup(signupDto: CreateUserDto) {
+    try {
+      await this.userService.create(signupDto)
+      return '注册成功'
+    } catch {
+      return '注册失败'
+    }
   }
 }

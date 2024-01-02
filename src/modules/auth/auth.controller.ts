@@ -4,14 +4,14 @@ import {
   NotImplementedException,
   ParseEnumPipe,
   Post,
-  Query,
-  UseGuards
+  Query
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { LoginDto, SignupDto } from './dto'
+import { LoginDto } from './dto'
 import { LoginType } from '@/enums'
-import { LocalAuthGuard } from '@/guard'
+
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { CreateUserDto } from '../user/dto/create-user.dto'
 
 @ApiTags('权限认证')
 @Controller('auth')
@@ -19,7 +19,6 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: '登录' })
-  @UseGuards(LocalAuthGuard)
   @Post('login')
   login(
     @Body() loginDto: LoginDto,
@@ -38,7 +37,7 @@ export class AuthController {
 
   @ApiOperation({ summary: '注册' })
   @Post('signup')
-  signup(@Body() signupDto: SignupDto) {
+  signup(@Body() signupDto: CreateUserDto) {
     return this.authService.signup(signupDto)
   }
 }
