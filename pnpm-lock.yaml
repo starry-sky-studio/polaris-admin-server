@@ -7,31 +7,52 @@ settings:
 dependencies:
   '@nestjs/common':
     specifier: ^10.0.0
-    version: 10.2.10(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+    version: 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+  '@nestjs/config':
+    specifier: ^3.1.1
+    version: 3.1.1(@nestjs/common@10.2.10)(reflect-metadata@0.1.13)
   '@nestjs/core':
     specifier: ^10.0.0
     version: 10.2.10(@nestjs/common@10.2.10)(@nestjs/platform-express@10.2.10)(reflect-metadata@0.1.13)(rxjs@7.8.1)
   '@nestjs/jwt':
     specifier: ^10.2.0
     version: 10.2.0(@nestjs/common@10.2.10)
+  '@nestjs/passport':
+    specifier: ^10.0.3
+    version: 10.0.3(@nestjs/common@10.2.10)(passport@0.7.0)
   '@nestjs/platform-express':
     specifier: ^10.0.0
     version: 10.2.10(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)
   '@nestjs/swagger':
     specifier: ^7.1.16
-    version: 7.1.16(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)(class-validator@0.14.0)(reflect-metadata@0.1.13)
+    version: 7.1.16(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)
+  '@node-rs/bcrypt':
+    specifier: ^1.7.3
+    version: 1.7.3
   '@prisma/client':
     specifier: 5.6.0
     version: 5.6.0(prisma@5.6.0)
   chalk:
     specifier: '4'
     version: 4.1.2
+  class-transformer:
+    specifier: ^0.5.1
+    version: 0.5.1
   class-validator:
     specifier: ^0.14.0
     version: 0.14.0
   dayjs:
     specifier: ^1.11.10
     version: 1.11.10
+  passport:
+    specifier: ^0.7.0
+    version: 0.7.0
+  passport-jwt:
+    specifier: ^4.0.1
+    version: 4.0.1
+  passport-local:
+    specifier: ^1.0.0
+    version: 1.0.0
   redis:
     specifier: ^4.6.11
     version: 4.6.11
@@ -73,6 +94,12 @@ devDependencies:
   '@types/node':
     specifier: ^20.3.1
     version: 20.10.0
+  '@types/passport-jwt':
+    specifier: ^3.0.13
+    version: 3.0.13
+  '@types/passport-local':
+    specifier: ^1.0.38
+    version: 1.0.38
   '@types/supertest':
     specifier: ^2.0.12
     version: 2.0.16
@@ -1409,7 +1436,7 @@ packages:
       - webpack-cli
     dev: true
 
-  /@nestjs/common@10.2.10(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1):
+  /@nestjs/common@10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1):
     resolution: {integrity: sha512-fwAk931rjW8CNH2Mgwawq/7HWHH1dxkOLdcgs7U52ddLk8CtHXjejm1cbNahewlSbNhvlOl7y1STLHutE6sUqw==}
     peerDependencies:
       class-transformer: '*'
@@ -1422,12 +1449,27 @@ packages:
       class-validator:
         optional: true
     dependencies:
+      class-transformer: 0.5.1
       class-validator: 0.14.0
       iterare: 1.2.1
       reflect-metadata: 0.1.13
       rxjs: 7.8.1
       tslib: 2.6.2
       uid: 2.0.2
+
+  /@nestjs/config@3.1.1(@nestjs/common@10.2.10)(reflect-metadata@0.1.13):
+    resolution: {integrity: sha512-qu5QlNiJdqQtOsnB6lx4JCXPQ96jkKUsOGd+JXfXwqJqZcOSAq6heNFg0opW4pq4J/VZoNwoo87TNnx9wthnqQ==}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
+      reflect-metadata: ^0.1.13
+    dependencies:
+      '@nestjs/common': 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      dotenv: 16.3.1
+      dotenv-expand: 10.0.0
+      lodash: 4.17.21
+      reflect-metadata: 0.1.13
+      uuid: 9.0.0
+    dev: false
 
   /@nestjs/core@10.2.10(@nestjs/common@10.2.10)(@nestjs/platform-express@10.2.10)(reflect-metadata@0.1.13)(rxjs@7.8.1):
     resolution: {integrity: sha512-+ckOI6BPi2ZMHikT9MCG4ctHDc4OnjhoIytrn7f2AYMMXI4bnutJhqyQKc30VDka5x3Wq6QAD57pgSP7y+JjJg==}
@@ -1447,7 +1489,7 @@ packages:
       '@nestjs/websockets':
         optional: true
     dependencies:
-      '@nestjs/common': 10.2.10(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/common': 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/platform-express': 10.2.10(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)
       '@nuxtjs/opencollective': 0.3.2
       fast-safe-stringify: 2.1.1
@@ -1465,12 +1507,12 @@ packages:
     peerDependencies:
       '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
     dependencies:
-      '@nestjs/common': 10.2.10(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/common': 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@types/jsonwebtoken': 9.0.5
       jsonwebtoken: 9.0.2
     dev: false
 
-  /@nestjs/mapped-types@2.0.3(@nestjs/common@10.2.10)(class-validator@0.14.0)(reflect-metadata@0.1.13):
+  /@nestjs/mapped-types@2.0.3(@nestjs/common@10.2.10)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13):
     resolution: {integrity: sha512-40Zdqg98lqoF0+7ThWIZFStxgzisK6GG22+1ABO4kZiGF/Tu2FE+DYLw+Q9D94vcFWizJ+MSjNN4ns9r6hIGxw==}
     peerDependencies:
       '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
@@ -1483,9 +1525,20 @@ packages:
       class-validator:
         optional: true
     dependencies:
-      '@nestjs/common': 10.2.10(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/common': 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      class-transformer: 0.5.1
       class-validator: 0.14.0
       reflect-metadata: 0.1.13
+    dev: false
+
+  /@nestjs/passport@10.0.3(@nestjs/common@10.2.10)(passport@0.7.0):
+    resolution: {integrity: sha512-znJ9Y4S8ZDVY+j4doWAJ8EuuVO7SkQN3yOBmzxbGaXbvcSwFDAdGJ+OMCg52NdzIO4tQoN4pYKx8W6M0ArfFRQ==}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
+      passport: ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0
+    dependencies:
+      '@nestjs/common': 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      passport: 0.7.0
     dev: false
 
   /@nestjs/platform-express@10.2.10(@nestjs/common@10.2.10)(@nestjs/core@10.2.10):
@@ -1494,7 +1547,7 @@ packages:
       '@nestjs/common': ^10.0.0
       '@nestjs/core': ^10.0.0
     dependencies:
-      '@nestjs/common': 10.2.10(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/common': 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/core': 10.2.10(@nestjs/common@10.2.10)(@nestjs/platform-express@10.2.10)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       body-parser: 1.20.2
       cors: 2.8.5
@@ -1534,7 +1587,7 @@ packages:
       - chokidar
     dev: true
 
-  /@nestjs/swagger@7.1.16(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)(class-validator@0.14.0)(reflect-metadata@0.1.13):
+  /@nestjs/swagger@7.1.16(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13):
     resolution: {integrity: sha512-f9KBk/BX9MUKPTj7tQNYJ124wV/jP5W2lwWHLGwe/4qQXixuDOo39zP55HIJ44LE7S04B7BOeUOo9GBJD/vRcw==}
     peerDependencies:
       '@fastify/static': ^6.0.0
@@ -1551,9 +1604,10 @@ packages:
       class-validator:
         optional: true
     dependencies:
-      '@nestjs/common': 10.2.10(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/common': 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/core': 10.2.10(@nestjs/common@10.2.10)(@nestjs/platform-express@10.2.10)(reflect-metadata@0.1.13)(rxjs@7.8.1)
-      '@nestjs/mapped-types': 2.0.3(@nestjs/common@10.2.10)(class-validator@0.14.0)(reflect-metadata@0.1.13)
+      '@nestjs/mapped-types': 2.0.3(@nestjs/common@10.2.10)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)
+      class-transformer: 0.5.1
       class-validator: 0.14.0
       js-yaml: 4.1.0
       lodash: 4.17.21
@@ -1575,11 +1629,147 @@ packages:
       '@nestjs/platform-express':
         optional: true
     dependencies:
-      '@nestjs/common': 10.2.10(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/common': 10.2.10(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/core': 10.2.10(@nestjs/common@10.2.10)(@nestjs/platform-express@10.2.10)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/platform-express': 10.2.10(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)
       tslib: 2.6.2
     dev: true
+
+  /@node-rs/bcrypt-android-arm-eabi@1.7.3:
+    resolution: {integrity: sha512-l53RuBqnqNvBN2jx09Ws6jpLmuQdSDx10n0GeaTfwh1svxsC8bPpVmxkfBExsT2Tu7KF38gTnPZvwsxysZQyPQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-android-arm64@1.7.3:
+    resolution: {integrity: sha512-TZpm4VbiViqDMvusrcYzLr1b1M5FDF0cDNiTUciLeBSsKtU5lNdEZGAU7gvCnrKoUWpGuOblHU7613zuB7SiNQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-darwin-arm64@1.7.3:
+    resolution: {integrity: sha512-SiUuAabynVsmixZMjh5xrn8w47EnV0HzbW9st4DPoVhn/wzdUcksIXDY75aoQG2EIzKLN8IGb+CIVnPGmRyhxw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-darwin-x64@1.7.3:
+    resolution: {integrity: sha512-R+81Z0eX4hZPvCXY5Z6l0l+JrTU3WcSYGHP0QYV9uwdaafOz6EhrCXUzZ02AIcAbNoVR8eucYVruq9PiasXoVw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-freebsd-x64@1.7.3:
+    resolution: {integrity: sha512-0pItU/5K3e83JjcJj9fZv+78txUoZ3hHCT7n/UMdu9mkpUzhX/rqb4jmQpJpD+UQoR76xp3qDo5RMgQBffBVNg==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [freebsd]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-linux-arm-gnueabihf@1.7.3:
+    resolution: {integrity: sha512-HTSybWUjNe8rWuXkTkMeFDiQNHc6VioRcgv6AeHZphIxiT6dFbnhXNkfz4Hr0zxvyPhZ3NrYjT2AmPVFT6VW3Q==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-linux-arm64-gnu@1.7.3:
+    resolution: {integrity: sha512-rWep6Y+v/c4bZHaM8LmSsrMwMmDR9wG4/q+3Z9VzR8xdnt5VCbuQdYWpf3sgGRGjTRdTBAdSK8x1reOjqsJ3Jg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-linux-arm64-musl@1.7.3:
+    resolution: {integrity: sha512-TyWEKhxr+yfGcMKzVV/ARZw+Hrky2yl91bo0XYU2ZW6I6LDC0emNsXugdWjwz8ADI4OWhhrOjXD8GCilxiB2Rg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-linux-x64-gnu@1.7.3:
+    resolution: {integrity: sha512-PofxM1Qg7tZKj1oP0I7tBTSSLr8Xc2uxx+P3pBCPmYzaBwWqGteNHJlF7n2q5xiH7YOlguH4w5CmcEjsiA3K4A==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-linux-x64-musl@1.7.3:
+    resolution: {integrity: sha512-D5V6/dDVKP8S/ieDBLGhTn4oTo3upbrpWInynbhOMjJvPiIxVG1PiI3MXkWBtG9qtfleDk7gUkEKtAOxlIxDTQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-win32-arm64-msvc@1.7.3:
+    resolution: {integrity: sha512-b4gH2Yj5R4TwULrfMHd1Qqr+MrnFjVRUAJujDKPqi+PppSqezW8QF6DRSOL4GjnBmz5JEd64wxgeidvy7dsbGw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-win32-ia32-msvc@1.7.3:
+    resolution: {integrity: sha512-E91ro+ybI0RhNc89aGaZQGll0YhPoHr8JacoWrNKwhg9zwNOYeuO0tokdMZdm6nF0/8obll0Mq7wO9AXO9iffw==}
+    engines: {node: '>= 10'}
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt-win32-x64-msvc@1.7.3:
+    resolution: {integrity: sha512-LO/p9yjPODj/pQvPnowBuwpDdqiyUXQbqL1xb1RSP3NoyCFAGmjL5h0plSQrhLh8hskQiozBRXNaQurtsM7o0Q==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@node-rs/bcrypt@1.7.3:
+    resolution: {integrity: sha512-BF6u9CBPUiyk1zU+5iwikezf+xM4MFSu5cmrrg/PLKffGgIM13ZsY6DHftcTraETB04ryasjM/5IejotH+sO5Q==}
+    engines: {node: '>= 10'}
+    optionalDependencies:
+      '@node-rs/bcrypt-android-arm-eabi': 1.7.3
+      '@node-rs/bcrypt-android-arm64': 1.7.3
+      '@node-rs/bcrypt-darwin-arm64': 1.7.3
+      '@node-rs/bcrypt-darwin-x64': 1.7.3
+      '@node-rs/bcrypt-freebsd-x64': 1.7.3
+      '@node-rs/bcrypt-linux-arm-gnueabihf': 1.7.3
+      '@node-rs/bcrypt-linux-arm64-gnu': 1.7.3
+      '@node-rs/bcrypt-linux-arm64-musl': 1.7.3
+      '@node-rs/bcrypt-linux-x64-gnu': 1.7.3
+      '@node-rs/bcrypt-linux-x64-musl': 1.7.3
+      '@node-rs/bcrypt-win32-arm64-msvc': 1.7.3
+      '@node-rs/bcrypt-win32-ia32-msvc': 1.7.3
+      '@node-rs/bcrypt-win32-x64-msvc': 1.7.3
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1862,7 +2052,6 @@ packages:
     resolution: {integrity: sha512-VRLSGzik+Unrup6BsouBeHsf4d1hOEgYWTm/7Nmw1sXoN1+tRly/Gy/po3yeahnP4jfnQWWAhQAqcNfH7ngOkA==}
     dependencies:
       '@types/node': 20.10.0
-    dev: false
 
   /@types/mime@1.3.5:
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
@@ -1895,6 +2084,35 @@ packages:
 
   /@types/normalize-package-data@2.4.4:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+    dev: true
+
+  /@types/passport-jwt@3.0.13:
+    resolution: {integrity: sha512-fjHaC6Bv8EpMMqzTnHP32SXlZGaNfBPC/Po5dmRGYi2Ky7ljXPbGnOy+SxZqa6iZvFgVhoJ1915Re3m93zmcfA==}
+    dependencies:
+      '@types/express': 4.17.21
+      '@types/jsonwebtoken': 9.0.5
+      '@types/passport-strategy': 0.2.38
+    dev: true
+
+  /@types/passport-local@1.0.38:
+    resolution: {integrity: sha512-nsrW4A963lYE7lNTv9cr5WmiUD1ibYJvWrpE13oxApFsRt77b0RdtZvKbCdNIY4v/QZ6TRQWaDDEwV1kCTmcXg==}
+    dependencies:
+      '@types/express': 4.17.21
+      '@types/passport': 1.0.16
+      '@types/passport-strategy': 0.2.38
+    dev: true
+
+  /@types/passport-strategy@0.2.38:
+    resolution: {integrity: sha512-GC6eMqqojOooq993Tmnmp7AUTbbQSgilyvpCYQjT+H6JfG/g6RGc7nXEniZlp0zyKJ0WUdOiZWLBZft9Yug1uA==}
+    dependencies:
+      '@types/express': 4.17.21
+      '@types/passport': 1.0.16
+    dev: true
+
+  /@types/passport@1.0.16:
+    resolution: {integrity: sha512-FD0qD5hbPWQzaM0wHUnJ/T0BBCJBxCeemtnCwc/ThhTg3x9jfrAcRUmj5Dopza+MfFS9acTe3wk7rcVnRIp/0A==}
+    dependencies:
+      '@types/express': 4.17.21
     dev: true
 
   /@types/qs@6.9.10:
@@ -2793,6 +3011,9 @@ packages:
     resolution: {integrity: sha512-0TNiGstbQmCFwt4akjjBg5pLRTSyj/PkWQ1ZoO2zntmg9yLqSRxwEa4iCfQLGjqhiqBfOJa7W/E8wfGrTDmlZQ==}
     dev: true
 
+  /class-transformer@0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
+
   /class-validator@0.14.0:
     resolution: {integrity: sha512-ct3ltplN8I9fOwUd8GrP8UQixwff129BkEtuWDKL5W45cQuLd19xqmTLu5ge78YDm/fdje6FMt0hGOhl0lii3A==}
     dependencies:
@@ -3435,6 +3656,16 @@ packages:
     dependencies:
       is-obj: 2.0.0
     dev: true
+
+  /dotenv-expand@10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
+    engines: {node: '>=12'}
+    dev: false
 
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -6245,6 +6476,34 @@ packages:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
 
+  /passport-jwt@4.0.1:
+    resolution: {integrity: sha512-UCKMDYhNuGOBE9/9Ycuoyh7vP6jpeTp/+sfMJl7nLff/t6dps+iaeE0hhNkKN8/HZHcJ7lCdOyDxHdDoxoSvdQ==}
+    dependencies:
+      jsonwebtoken: 9.0.2
+      passport-strategy: 1.0.0
+    dev: false
+
+  /passport-local@1.0.0:
+    resolution: {integrity: sha512-9wCE6qKznvf9mQYYbgJ3sVOHmCWoUNMVFoZzNoznmISbhnNNPhN9xfY3sLmScHMetEJeoY7CXwfhCe7argfQow==}
+    engines: {node: '>= 0.4.0'}
+    dependencies:
+      passport-strategy: 1.0.0
+    dev: false
+
+  /passport-strategy@1.0.0:
+    resolution: {integrity: sha512-CB97UUvDKJde2V0KDWWB3lyf6PC3FaZP7YxZ2G8OAtn9p4HI9j9JLP9qjOGZFvyl8uwNT8qM+hGnz/n16NI7oA==}
+    engines: {node: '>= 0.4.0'}
+    dev: false
+
+  /passport@0.7.0:
+    resolution: {integrity: sha512-cPLl+qZpSc+ireUvt+IzqbED1cHHkDoVYMo30jbJIdOOjQ1MQYZBPiNvmi8UM6lJuOpTPXJGZQk0DtC4y61MYQ==}
+    engines: {node: '>= 0.4.0'}
+    dependencies:
+      passport-strategy: 1.0.0
+      pause: 0.0.1
+      utils-merge: 1.0.1
+    dev: false
+
   /path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
@@ -6287,6 +6546,10 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
     dev: true
+
+  /pause@0.0.1:
+    resolution: {integrity: sha512-KG8UEiEVkR3wGEb4m5yZkVCzigAD+cVEJck2CzYZO37ZGJfctvVptVO192MwrtPhzONn6go8ylnOdMhKqi4nfg==}
+    dev: false
 
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
@@ -7527,6 +7790,11 @@ packages:
   /utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+
+  /uuid@9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: false
 
   /v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}

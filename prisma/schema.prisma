@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native"]
@@ -14,37 +11,38 @@ datasource db {
 
 //用户
 model User {
-  id          Int       @id @default(autoincrement())
-  username    String    @unique @db.VarChar(30)
-  nickName    String?   @map("nick_name") @db.VarChar(50)
-  password    String?   @db.VarChar(100)
-  email       String?   @unique @db.VarChar(50)
-  phoneNumber String?   @map("phone_number") @db.VarChar(25)
-  avatarUrl   String?   @map("avatar_url") @db.VarChar(100)
-  gender      String?   @db.VarChar(100)
-  biography   String?   @db.VarChar(500)
-  country     String?   @db.VarChar(25)
-  province    String?   @db.VarChar(25)
-  city        String?   @db.VarChar(25)
-  website     String?   @db.VarChar(50)
-  enabled     Boolean   @default(true)
-  birthDate   DateTime? @map("birth_date") @db.Date
+  id          Int        @id @default(autoincrement())
+  username    String     @unique @db.VarChar(30)
+  nickName    String?    @map("nick_name") @db.VarChar(50)
+  password    String?    @db.VarChar(100)
+  email       String?    @unique @db.VarChar(50)
+  phoneNumber String?    @map("phone_number") @db.VarChar(25)
+  avatarUrl   String?    @map("avatar_url") @db.VarChar(100)
+  gender      String?    @db.VarChar(100)
+  biography   String?    @db.VarChar(500)
+  country     String?    @db.VarChar(25)
+  province    String?    @db.VarChar(25)
+  city        String?    @db.VarChar(25)
+  website     String?    @db.VarChar(50)
+  enabled     Boolean    @default(true)
+  birthDate   DateTime?  @map("birth_date") @db.Date
   /// 用户 - 认证
   auths       Auth[]
   /// 用户 - 角色
-  // userRoles   UserRole[]
+  //userRoles   UserRole[]
   /// 创建时间
-  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdAt   DateTime?  @default(now()) @map("created_at") @db.Timestamptz(3)
   /// 创建人
-  createdBy   Int?      @map("created_by")
+  createdBy   Int?       @map("created_by")
   /// 更新时间
-  updatedAt   DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedAt   DateTime?  @updatedAt @map("updated_at") @db.Timestamptz(3)
   /// 更新人
-  updatedBy   Int?      @map("updated_by")
+  updatedBy   Int?       @map("updated_by")
   /// 删除时间
-  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  deletedAt   DateTime?  @map("deleted_at") @db.Timestamptz(3)
   /// 删除人
-  deletedBy   Int?      @map("deleted_by")
+  deletedBy   Int?       @map("deleted_by")
+  UserRole    UserRole[]
 
   @@map("system_user")
 }
@@ -91,24 +89,21 @@ model Auth {
 
 /// 角色
 model Role {
-  id   Int    @id @default(autoincrement())
-  //角色编码
-  code String @unique @db.Varchar(50)
-
-  label String @db.Varchar(50)
-
-  remark String? @db.Varchar(500)
-
+  /// 唯一标识
+  id      Int     @id @default(autoincrement())
+  /// 角色编码
+  code    String  @unique @db.VarChar(50)
+  /// 名称
+  label   String  @db.VarChar(50)
+  /// 备注
+  remark  String? @db.VarChar(500)
+  /// 是否启用
   enabled Boolean @default(true)
+  /// 排序
+  sort    Int     @default(0)
 
   /// 用户 - 角色
   userRoles UserRole[]
-
-  ///角色 - 菜单
-  roleMenuItems RoleMenuItem[]
-
-  ///角色 - 部门
-  roleDepartments RoleDepartment[]
 
   /// 创建时间
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -154,110 +149,22 @@ model UserRole {
   @@map("system_user_role")
 }
 
-/// 菜单
-// model MenuItem {
-//   id            Int            @id @default(autoincrement())
-//   type          String?        @db.Varchar(50)
-//   path          String?        @db.Varchar(255)
-//   icon          String?        @db.Varchar(50)
-//   componentPath String?        @map("component_path") @db.Varchar(255)
-//   code          String?        @db.Varchar(255)
-//   hidden        Boolean        @default(false)
-//   lable         String         @db.Varchar(50)
-//   remark        String         @db.Varchar(500)
-//   enabled       Boolean        @default(true)
-//   sort          Int            @default(0)
-//   ///父级菜单
-//   parent        MenuItem?      @relation("MenuItemToParent", files: [parentId], references: [id])
-//   parentId      Int?           @map("parent_id")
-//   children      MenuItem[]     @relation("MenuItemToParent")
-//   roleMenuItems RoleMenuItem[]
-
-//   /// 创建时间
-//   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
-//   /// 创建人
-//   createdBy Int?      @map("created_by")
-//   /// 更新时间
-//   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
-//   /// 更新人
-//   updatedBy Int?      @map("updated_by")
-//   /// 删除时间
-//   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
-//   /// 删除人
-//   deletedBy Int?      @map("deleted_by")
-
-//   @@map("system_menu_item")
-// }
-
-// 角色-菜单
-
-// model RoleMenuItem
-
-model UserRole {
-  id Int @id @default(autoincrement())
-
-  user User @relation(fields: [userId], references: [id])
-
-  userId Int @map("user_id")
-
-  role Role @relation(fields: [roleId], references: [id])
-
-  /// 角色 ID
-  roleId Int @map("role_id")
-
-  /// 创建时间
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
-  /// 创建人
-  createdBy Int?      @map("created_by")
-  /// 更新时间
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
-  /// 更新人
-  updatedBy Int?      @map("updated_by")
-  /// 删除时间
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
-  /// 删除人
-  deletedBy Int?      @map("deleted_by")
-
-  @@map("system_user_role")
-}
-
-// /// 菜单
-// model MenuItem {
-//   id            Int     @id @default(autoincrement())
-//   path          String? @db.Varchar(255)
-//   icon          String? @db.Varchar(50)
-//   componentPath String? @map("component_path") @db.VarChar(255)
-//   code          String? @db.VarChar(255)
-//   hidden        Boolean @default(false)
-//   enabled       Boolean @default(true)
-
-//   /// 创建时间
-//   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
-//   /// 创建人
-//   createdBy Int?      @map("created_by")
-//   /// 更新时间
-//   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
-//   /// 更新人
-//   updatedBy Int?      @map("updated_by")
-//   /// 删除时间
-//   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
-//   /// 删除人
-//   deletedBy Int?      @map("deleted_by")
-
-//   @@map("system_menu_item")
-// }
-
 model Department {
-  id        Int          @id @default(autoincrement())
-  leader    String?      @db.VarChar(50)
-  label     String       @db.VarChar(50)
-  remark    String?      @db.VarChar(50)
-  enabled   Boolean      @default(true)
-  sort      Int          @default(0)
-  parentIds Int[]        @map("parent_Ids")
-  parent    Department?  @relation("DepartmentToParent", fields: [parentId], references: [id])
-  parentId  Int?
-  children  Department[]
+  id        Int     @id @default(autoincrement())
+  leader    String? @db.VarChar(50)
+  label     String  @db.VarChar(50)
+  remark    String? @db.VarChar(50)
+  enabled   Boolean @default(true)
+  sort      Int     @default(0)
+  /// 祖先部门
+  parentIds Int[]   @map("parent_Ids")
+
+  /// 父级部门
+  parent   Department?  @relation("DepartmentToParent", fields: [parentId], references: [id])
+  /// 父级部门 ID
+  parentId Int?         @map("parent_id")
+  /// 子级部门
+  children Department[] @relation("DepartmentToParent")
 
   /// 创建时间
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)

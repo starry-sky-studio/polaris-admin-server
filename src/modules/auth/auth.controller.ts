@@ -1,19 +1,40 @@
-import { Controller } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  NotImplementedException,
+  ParseEnumPipe,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
-// import { CreateAuthDto } from './dto/create-auth.dto'
-// import { UpdateAuthDto } from './dto/update-auth.dto'
+import { LoginDto, SignupDto } from "./dto";
+import { LoginType } from "@/enums";
+import { LocalAuthGuard } from "@/guard";
 
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // @Post('login')
-  // login(@Body() createAuthDto: CreateAuthDto) {
-  //   return this.authService.create(createAuthDto)
-  // }
+  @UseGuards(LocalAuthGuard)
+  @Post("login")
+  login(
+    @Body() loginDto: LoginDto,
+    @Query(
+      "type",
+      new ParseEnumPipe(LoginType, {
+        exceptionFactory: () => {
+          throw new NotImplementedException("请选择正确的登录类型");
+        },
+      }),
+    )
+    type: string,
+  ) {
+    return this.authService.login(loginDto, type);
+  }
 
-  // @Post('signup')
-  // signup(@Body() createAuthDto: CreateAuthDto) {
-  //   return this.authService.create(createAuthDto)
-  // }
+  @Post("signup")
+  signup(@Body() signupDto: SignupDto) {
+    return this.authService.signup(signupDto);
+  }
 }

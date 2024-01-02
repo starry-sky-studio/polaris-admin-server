@@ -1,6 +1,5 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { MyLogger } from "./winston/logger";
 import { WINSTON_LOGGER_TOKEN } from "./winston/winston.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
@@ -35,6 +34,7 @@ async function bootstrap() {
   SwaggerModule.setup("doc", app, document);
 
   app.useLogger(app.get(WINSTON_LOGGER_TOKEN));
+  app.enableCors();
 
   await app.listen(3000);
 }

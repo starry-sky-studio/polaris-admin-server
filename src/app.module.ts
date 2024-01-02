@@ -6,7 +6,10 @@ import { transports, format } from "winston";
 import * as chalk from "chalk";
 
 import { JwtModule } from "@nestjs/jwt";
-import { AuthModule } from "./auth/auth.module";
+import { AuthModule } from "./modules/auth/auth.module";
+import { ConfigModule } from "@nestjs/config";
+import { JwtConfig } from "@/configs";
+
 @Module({
   imports: [
     WinstonModule.forRoot({
@@ -38,6 +41,9 @@ import { AuthModule } from "./auth/auth.module";
     }),
 
     AuthModule,
+    ConfigModule.forRoot({
+      load: [JwtConfig],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
