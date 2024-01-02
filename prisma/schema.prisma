@@ -29,7 +29,7 @@ model User {
   /// 用户 - 认证
   auths       Auth[]
   /// 用户 - 角色
-  //userRoles   UserRole[]
+  userRoles   UserRole[]
   /// 创建时间
   createdAt   DateTime?  @default(now()) @map("created_at") @db.Timestamptz(3)
   /// 创建人
@@ -42,7 +42,6 @@ model User {
   deletedAt   DateTime?  @map("deleted_at") @db.Timestamptz(3)
   /// 删除人
   deletedBy   Int?       @map("deleted_by")
-  UserRole    UserRole[]
 
   @@map("system_user")
 }
@@ -105,6 +104,9 @@ model Role {
   /// 用户 - 角色
   userRoles UserRole[]
 
+  /// 角色-权限
+  RolesPermission RolePermission[]
+
   /// 创建时间
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
   /// 创建人
@@ -147,6 +149,59 @@ model UserRole {
   deletedBy Int?      @map("deleted_by")
 
   @@map("system_user_role")
+}
+
+model Permission {
+  id          Int    @id @default(autoincrement())
+  /// 权限代码
+  code        String @db.VarChar(50)
+  /// 权限描述
+  description String @db.VarChar(50)
+
+  ///角色-权限
+  RolesPermission RolePermission[]
+
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
+
+  @@map("system_Permission")
+}
+
+model RolePermission {
+  id Int @id @default(autoincrement())
+
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  permissionId Int @map("permission_id")
+
+  role Role @relation(fields: [roleId], references: [id])
+
+  roleId Int @map("role_id")
+
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
+
+  @@map("system_role_permission")
 }
 
 model Department {

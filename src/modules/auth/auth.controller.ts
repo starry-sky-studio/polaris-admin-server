@@ -10,8 +10,9 @@ import { AuthService } from './auth.service'
 import { LoginDto } from './dto'
 import { LoginType } from '@/enums'
 
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from '../user/dto/create-user.dto'
+import { RefreshToken } from '@/interceptors'
 
 @ApiTags('权限认证')
 @Controller('auth')
@@ -39,5 +40,12 @@ export class AuthController {
   @Post('signup')
   signup(@Body() signupDto: CreateUserDto) {
     return this.authService.signup(signupDto)
+  }
+
+  @ApiOperation({ summary: '刷新token' })
+  @ApiBody({})
+  @Post('refresh')
+  async refresh(@Body() refreshToken: RefreshToken) {
+    return this.authService.refreshToken(refreshToken)
   }
 }

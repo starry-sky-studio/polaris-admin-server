@@ -1,13 +1,13 @@
-import { env } from "node:process";
+import { env } from 'node:process'
 
-import { registerAs } from "@nestjs/config";
+import { registerAs } from '@nestjs/config'
 
 // JWT 配置
-export const JwtConfig = registerAs("jwt", () => {
+export const JwtConfig = registerAs('jwt', () => {
   return Object.freeze({
-    accessTokenSecret: env.JWT_ACCESS_TOKEN_SECRET,
+    accessTokenSecret: env.JWT_ACCESS_TOKEN_SECRET || 'accessTokenSecret',
     accessTokenExp: env.JWT_ACCESS_TOKEN_EXP,
     refreshTokenSecret: env.JWT_REFRESH_TOKEN_SECRET,
-    refreshTokenExp: env.JWT_REFRESH_TOKEN_EXP,
-  });
-});
+    refreshTokenExp: env.JWT_REFRESH_TOKEN_EXP
+  })
+})

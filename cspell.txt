@@ -45,3 +45,5 @@ WECHAT
 Varchar
 lable
 requirepass
+jsonwebtoken
+timespan

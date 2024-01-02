@@ -6,10 +6,10 @@ import { compare } from '@node-rs/bcrypt'
 import { LoginType } from 'src/enums'
 import { UserVo } from '../user/vo'
 import { plainToClass } from 'class-transformer'
-import { JwtPayload } from '@/interceptors'
+import { JwtPayload, RefreshToken } from '@/interceptors'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
-import { LoginVo } from './vo'
+import { LoginVo, TokenVo } from './vo'
 import { CreateUserDto } from '../user/dto/create-user.dto'
 
 @Injectable()
@@ -51,6 +51,13 @@ export class AuthService {
       where: {
         username: loginDto.username,
         deletedAt: null
+      },
+      include: {
+        userRoles: {
+          select: {
+            role: true
+          }
+        }
       }
     })
     if (!user) {
@@ -66,12 +73,13 @@ export class AuthService {
   generateTokens(jwtPayload: JwtPayload) {
     return {
       accessToken: this.jwtService.sign(jwtPayload, {
-        secret: this.configService.get('accessTokenSecret'),
-        expiresIn: this.configService.get('accessTokenExp')
+        secret: this.configService.get('jwt.accessTokenSecret'),
+
+        expiresIn: this.configService.get('jwt.accessTokenExp')
       }),
       refreshToken: this.jwtService.sign(jwtPayload, {
-        secret: this.configService.get('refreshTokenSecret'),
-        expiresIn: this.configService.get('refreshTokenExp')
+        secret: this.configService.get('jwt.refreshTokenSecret'),
+        expiresIn: this.configService.get('jwt.refreshTokenExp')
       })
     }
   }
@@ -83,5 +91,18 @@ export class AuthService {
     } catch {
       return '注册失败'
     }
+  }
+
+  async refreshToken(refreshToken: RefreshToken) {
+    const data = this.jwtService.verify(refreshToken.refreshToken, {
+      secret: this.configService.get('jwt.refreshTokenSecret')
+    })
+    const user = await this.userService.findUserById(data.sub)
+    const { id, username } = user ?? {}
+    const tokens = this.generateTokens({
+      sub: id,
+      username
+    })
+    return new TokenVo({ ...tokens })
   }
 }

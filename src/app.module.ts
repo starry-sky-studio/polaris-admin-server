@@ -8,12 +8,19 @@ import * as chalk from 'chalk'
 import { JwtModule } from '@nestjs/jwt'
 import { AuthModule } from './modules/auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
-import { JwtConfig } from '@/configs'
+import { JwtConfig, RedisConfig } from '@/configs'
 import { PrismaModule } from './shared/prisma/prisma.module'
 import { UserModule } from './modules/user/user.module'
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env'],
+      load: [JwtConfig, RedisConfig],
+      cache: true,
+      expandVariables: true
+    }),
     WinstonModule.forRoot({
       level: 'debug',
       transports: [
@@ -35,17 +42,11 @@ import { UserModule } from './modules/user/user.module'
       ]
     }),
 
-    JwtModule.register({
-      secret: '',
-      signOptions: {
-        expiresIn: '7d'
-      }
-    }),
     AuthModule,
     PrismaModule,
     UserModule,
-    ConfigModule.forRoot({
-      load: [JwtConfig]
+    JwtModule.register({
+      global: true
     })
   ],
   controllers: [AppController],

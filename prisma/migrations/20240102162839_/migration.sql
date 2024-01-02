@@ -80,6 +80,36 @@ CREATE TABLE "system_user_role" (
 );
 
 -- CreateTable
+CREATE TABLE "system_Permission" (
+    "id" SERIAL NOT NULL,
+    "code" VARCHAR(50) NOT NULL,
+    "description" VARCHAR(50) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_by" INTEGER,
+    "updated_at" TIMESTAMPTZ(3),
+    "updated_by" INTEGER,
+    "deleted_at" TIMESTAMPTZ(3),
+    "deleted_by" INTEGER,
+
+    CONSTRAINT "system_Permission_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "system_role_permission" (
+    "id" SERIAL NOT NULL,
+    "permission_id" INTEGER NOT NULL,
+    "role_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_by" INTEGER,
+    "updated_at" TIMESTAMPTZ(3),
+    "updated_by" INTEGER,
+    "deleted_at" TIMESTAMPTZ(3),
+    "deleted_by" INTEGER,
+
+    CONSTRAINT "system_role_permission_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "system_department" (
     "id" SERIAL NOT NULL,
     "leader" VARCHAR(50),
@@ -158,6 +188,12 @@ ALTER TABLE "system_user_role" ADD CONSTRAINT "system_user_role_user_id_fkey" FO
 
 -- AddForeignKey
 ALTER TABLE "system_user_role" ADD CONSTRAINT "system_user_role_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "system_role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "system_role_permission" ADD CONSTRAINT "system_role_permission_permission_id_fkey" FOREIGN KEY ("permission_id") REFERENCES "system_Permission"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "system_role_permission" ADD CONSTRAINT "system_role_permission_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "system_role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "system_department" ADD CONSTRAINT "system_department_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "system_department"("id") ON DELETE SET NULL ON UPDATE CASCADE;
