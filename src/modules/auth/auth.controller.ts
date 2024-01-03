@@ -4,8 +4,7 @@ import {
   NotImplementedException,
   ParseEnumPipe,
   Post,
-  Query,
-  UseGuards
+  Query
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto'
@@ -14,7 +13,7 @@ import { LoginType } from '@/enums'
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from '../user/dto/create-user.dto'
 import { RefreshToken } from '@/interface'
-import { LocalAuthGuard } from '@/guard'
+import { SkipAuth } from '@/decorator'
 
 @ApiTags('权限认证')
 @Controller('auth')
@@ -22,7 +21,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: '登录' })
-  @UseGuards(LocalAuthGuard)
+  @SkipAuth()
   @Post('login')
   login(
     @Body() loginDto: LoginDto,
@@ -40,6 +39,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: '注册' })
+  @SkipAuth()
   @Post('signup')
   signup(@Body() signupDto: CreateUserDto) {
     return this.authService.signup(signupDto)

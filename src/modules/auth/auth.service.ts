@@ -87,9 +87,9 @@ export class AuthService {
   async signup(signupDto: CreateUserDto) {
     try {
       await this.userService.create(signupDto)
-      return '注册成功'
-    } catch {
-      return '注册失败'
+      return '创建成功'
+    } catch (e) {
+      return e
     }
   }
 

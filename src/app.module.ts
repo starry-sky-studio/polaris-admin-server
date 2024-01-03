@@ -12,7 +12,7 @@ import { JwtConfig, RedisConfig } from '@/configs'
 import { PrismaModule } from './shared/prisma/prisma.module'
 import { UserModule } from './modules/user/user.module'
 import { APP_GUARD } from '@nestjs/core'
-import { LoginGuard } from './guard'
+import { LocalAuthGuard } from './guard'
 
 @Module({
   imports: [
@@ -56,7 +56,7 @@ import { LoginGuard } from './guard'
     AppService,
     {
       provide: APP_GUARD,
-      useClass: LoginGuard
+      useClass: LocalAuthGuard
     }
   ]
 })

@@ -13,15 +13,19 @@ import { Reflector } from '@nestjs/core'
 import { JwtService } from '@nestjs/jwt'
 import { Observable } from 'rxjs'
 import type { Request } from 'express'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 @Dependencies(Reflector)
-export class LoginGuard implements CanActivate {
+export class LocalAuthGuard implements CanActivate {
   @Inject()
   private reflector: Reflector
 
   @Inject(JwtService)
   private jwtService: JwtService
+
+  @Inject(ConfigService)
+  private configService: ConfigService
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const isSkipAuth = this.reflector.get(SKIP_AUTH, context.getHandler())
@@ -32,12 +36,13 @@ export class LoginGuard implements CanActivate {
     const request: Request & { user: RequestUser } = context.switchToHttp().getRequest()
     const authorization = request.headers.authorization
     if (!authorization) {
-      console.log(authorization, '用户未登录')
       throw new UnauthorizedException('用户未登录')
     }
     try {
       const token = authorization.split(' ')[1]
-      const data = this.jwtService.verify<JwtPayload>(token)
+      const data = this.jwtService.verify<JwtPayload>(token, {
+        secret: this.configService.get('jwt.accessTokenSecret')
+      })
       const { sub, username } = data ?? {}
       request.user = {
         userId: sub,

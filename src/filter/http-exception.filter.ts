@@ -14,7 +14,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       response.status(status).json(new R({ msg: exceptionResponse, code: status }))
     } else {
       const { message } = exceptionResponse as Record<string, any>
-      response.status(status).json(new R({ msg: message, code: status }))
+      let msg = message
+      if (Array.isArray(msg)) {
+        msg = message[0]
+      }
+      response.status(status).json(new R({ msg, code: status }))
     }
   }
 }

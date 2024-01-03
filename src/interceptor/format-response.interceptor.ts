@@ -1,3 +1,4 @@
+import { R } from '@/class'
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common'
 
 import { Response } from 'express'
@@ -9,11 +10,11 @@ export class FormatResponseInterceptor implements NestInterceptor {
     const response = context.switchToHttp().getResponse<Response>()
     return next.handle().pipe(
       map((data) => {
-        return {
+        return new R({
           code: response.statusCode,
-          message: 'success',
+          msg: 'success',
           data
-        }
+        })
       })
     )
   }

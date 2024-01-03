@@ -57,15 +57,31 @@ export class UserService {
     return `This action returns all user`
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`
+  async findOne(id: number) {
+    const findUser = await this.prismaService.user.findUnique({
+      where: {
+        id,
+        deletedAt: null
+      }
+    })
+    return plainToClass(UserVo, findUser)
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} ${updateUserDto}user`
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`
+  async remove(id: number, deletedBy: number) {
+    await this.prismaService.user.update({
+      where: {
+        id,
+        deletedAt: null
+      },
+      data: {
+        deletedAt: new Date().toISOString(),
+        deletedBy
+      }
+    })
+    return '删除成功'
   }
 }

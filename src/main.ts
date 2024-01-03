@@ -4,7 +4,8 @@ import { WINSTON_LOGGER_TOKEN } from './winston/winston.module'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
 import { HttpExceptionFilter } from './filter/http-exception.filter'
-import { LoggingInterceptor } from './interceptor'
+import { FormatResponseInterceptor, LoggingInterceptor } from './interceptor'
+import { PrismaExceptionFilter } from './filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -16,8 +17,14 @@ async function bootstrap() {
   // 全局过滤器 - 异常处理
   app.useGlobalFilters(new HttpExceptionFilter())
 
+  // 全局过滤器 - prisma 异常处理
+  app.useGlobalFilters(new PrismaExceptionFilter())
+
   // 全局拦截器 - 日志
   app.useGlobalInterceptors(new LoggingInterceptor())
+
+  // 全局拦截器 - 响应格式化
+  app.useGlobalInterceptors(new FormatResponseInterceptor())
 
   const config = new DocumentBuilder()
     .setTitle('Text example')
@@ -45,7 +52,6 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document)
 
   app.useLogger(app.get(WINSTON_LOGGER_TOKEN))
-  app.useGlobalPipes(new ValidationPipe())
   app.enableCors()
 
   await app.listen(3000)
