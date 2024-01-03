@@ -47,3 +47,4 @@ lable
 requirepass
 jsonwebtoken
 timespan
+unlogin

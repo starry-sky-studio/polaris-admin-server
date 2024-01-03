@@ -7,11 +7,12 @@ import { PrismaService } from '@/shared/prisma/prisma.service'
 import { UserService } from '../user/user.service'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
+import { LocalStrategy } from './strategies'
 
 @Module({
   imports: [UserModule, PassportModule, UserModule],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, UserService, JwtService, ConfigService],
+  providers: [AuthService, PrismaService, UserService, JwtService, ConfigService, LocalStrategy],
   exports: [AuthService]
 })
 export class AuthModule {}

@@ -11,6 +11,8 @@ import { ConfigModule } from '@nestjs/config'
 import { JwtConfig, RedisConfig } from '@/configs'
 import { PrismaModule } from './shared/prisma/prisma.module'
 import { UserModule } from './modules/user/user.module'
+import { APP_GUARD } from '@nestjs/core'
+import { LoginGuard } from './guard'
 
 @Module({
   imports: [
@@ -50,6 +52,12 @@ import { UserModule } from './modules/user/user.module'
     })
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: LoginGuard
+    }
+  ]
 })
 export class AppModule {}

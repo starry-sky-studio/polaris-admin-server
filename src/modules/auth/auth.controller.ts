@@ -13,7 +13,7 @@ import { LoginType } from '@/enums'
 
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from '../user/dto/create-user.dto'
-import { RefreshToken } from '@/interceptors'
+import { RefreshToken } from '@/interface'
 import { LocalAuthGuard } from '@/guard'
 
 @ApiTags('权限认证')
