@@ -42,6 +42,17 @@ export class UserService {
     return plainToClass(UserVo, findUser)
   }
 
+  async findUserByUsername(username: string) {
+    const findUser = await this.prismaService.user.findUnique({
+      where: {
+        username,
+        deletedAt: null
+      }
+    })
+
+    return plainToClass(UserVo, findUser)
+  }
+
   findAll() {
     return `This action returns all user`
   }

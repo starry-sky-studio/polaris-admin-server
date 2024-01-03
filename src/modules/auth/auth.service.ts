@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { LoginDto } from './dto'
 import { PrismaService } from 'src/shared/prisma/prisma.service'
 import { UserService } from '../user/user.service'
-import { compare } from '@node-rs/bcrypt'
+import { compare, hash } from '@node-rs/bcrypt'
 import { LoginType } from 'src/enums'
 import { UserVo } from '../user/vo'
 import { plainToClass } from 'class-transformer'
@@ -104,5 +104,14 @@ export class AuthService {
       username
     })
     return new TokenVo({ ...tokens })
+  }
+
+  async validateUser(username: string, password: string) {
+    const user = await this.userService.findUserByUsername(username)
+    const passwordHash = await hash(password, 12)
+    if (user && user.password === passwordHash) {
+      return user
+    }
+    return null
   }
 }
