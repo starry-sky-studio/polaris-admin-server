@@ -5,6 +5,7 @@ import { hash } from '@node-rs/bcrypt'
 import { plainToClass } from 'class-transformer'
 import { UserVo } from './vo'
 import { PrismaService } from '@/shared/prisma/prisma.service'
+import { PatchUserDto } from './dto'
 
 @Injectable()
 export class UserService {
@@ -57,18 +58,38 @@ export class UserService {
     return `This action returns all user`
   }
 
-  async findOne(id: number) {
-    const findUser = await this.prismaService.user.findUnique({
-      where: {
-        id,
-        deletedAt: null
-      }
-    })
-    return plainToClass(UserVo, findUser)
+  async patch(id: number, patch: PatchUserDto, updatedBy?: number) {
+    const userVo = plainToClass(
+      UserVo,
+      await this.prismaService.user.update({
+        where: {
+          id,
+          deletedAt: null
+        },
+        data: {
+          ...PatchUserDto,
+          updatedBy
+        }
+      })
+    )
+    return userVo
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} ${updateUserDto}user`
+  async update(id: number, updateUserDto: UpdateUserDto, updatedBy?: number) {
+    const userVo = plainToClass(
+      UserVo,
+      await this.prismaService.user.update({
+        where: {
+          id,
+          deletedAt: null
+        },
+        data: {
+          ...updateUserDto,
+          updatedBy
+        }
+      })
+    )
+    return userVo
   }
 
   async remove(id: number, deletedBy: number) {

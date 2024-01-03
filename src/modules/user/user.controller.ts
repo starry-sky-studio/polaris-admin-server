@@ -25,7 +25,7 @@ export class UserController {
   @ApiOperation({ summary: '获取用户信息 [id]' })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id)
+    return this.userService.findUserById(+id)
   }
 
   @ApiOperation({ summary: '更新用户信息' })
