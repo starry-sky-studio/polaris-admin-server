@@ -48,3 +48,5 @@ requirepass
 jsonwebtoken
 timespan
 unlogin
+websockets
+sditzlmmdjfltvhrpqrhulrvoa

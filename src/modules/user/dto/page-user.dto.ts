@@ -2,20 +2,15 @@ import { ApiPropertyOptional } from '@nestjs/swagger'
 import { IsBoolean, IsNumber, IsOptional } from 'class-validator'
 
 import { PageDto } from '@/class'
-import { ToId } from '@/decorators'
-import { I18nUtils } from '@/utils'
-
-const { t } = I18nUtils
 
 export class PageUserDto extends PageDto {
   @ApiPropertyOptional({ description: 'ID' })
-  @IsNumber({}, { message: t('common.ID.INVALID') })
+  @IsNumber({}, { message: 'id应该为数字' })
   @IsOptional()
-  @ToId()
   id?: number
 
   @ApiPropertyOptional({ description: '是否启用' })
-  @IsBoolean({ message: t('common.ENABLED.INVALID') })
+  @IsBoolean({ message: '启用禁用为布尔值' })
   @IsOptional()
   enabled?: boolean
 }
