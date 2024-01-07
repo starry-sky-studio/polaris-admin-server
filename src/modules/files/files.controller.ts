@@ -21,13 +21,18 @@ export class FilesController {
 
   @ApiOperation({ summary: '上传单个excel文件' })
   @Post('excel')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      dest: 'uploads/excel',
+      storage: storage('uploads/excel')
+    })
+  )
   uploadFile(
     @UploadedFile(
       new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: 'png'
-        })
+        // .addFileTypeValidator({
+        //   fileType: /.xlsx?$/i
+        // })
         .addMaxSizeValidator({
           maxSize: 100000
         })
@@ -38,26 +43,38 @@ export class FilesController {
     file: Express.Multer.File
   ) {
     console.log(file)
+    return '上传成功'
   }
 
   @ApiOperation({ summary: '上传多个文件' })
   @Post('uploads')
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'avatar', maxCount: 1 },
-      { name: 'background', maxCount: 1 }
-    ])
+    FileFieldsInterceptor(
+      [
+        { name: 'avatar', maxCount: 1 },
+        { name: 'background', maxCount: 1 }
+      ],
+      {
+        dest: 'uploads',
+        storage: storage('uploads')
+      }
+    )
   )
   uploadFiles(
     @UploadedFiles() files: { avatar?: Express.Multer.File[]; background?: Express.Multer.File[] }
   ) {
     console.log(files)
+    return '上传成功'
   }
 
+  @ApiOperation({ summary: '上传数组' })
   @Post('array')
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(
+    FilesInterceptor('files', 3, { dest: 'uploads/array', storage: storage('uploads/array') })
+  )
   uploadFileArray(@UploadedFiles() files: Array<Express.Multer.File>) {
     console.log(files)
+    return '上传成功'
   }
 
   @ApiOperation({ summary: '上传头像' })
@@ -66,11 +83,11 @@ export class FilesController {
     name: 'id',
     description: '上传头像Id'
   })
-  @Post('avatar/:id')
+  @Post('avatar/:id(\\d+)')
   @UseInterceptors(
     FileInterceptor('file', {
-      dest: 'uploads',
-      storage: storage,
+      dest: 'uploads/avatar',
+      storage: storage('uploads/avatar'),
       fileFilter(req, file, callback) {
         const extname = path.extname(file.originalname)
         if (['.png', '.jpg', '.gif'].includes(extname)) {
@@ -81,7 +98,20 @@ export class FilesController {
       }
     })
   )
-  async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Param() id: number) {
-    return await this.filesService.saveAvatar(file.originalname, id)
+  async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Param('id') id: number) {
+    console.log(typeof id)
+    return await this.filesService.saveAvatar(file.originalname, Number(id))
+  }
+
+  @ApiOperation({ summary: '大图分片上传' })
+  @Post('large')
+  @UseInterceptors(
+    FilesInterceptor('files', 20, {
+      dest: 'uploads'
+    })
+  )
+  uploadLargeFiles(@UploadedFiles() files: Array<Express.Multer.File>, @Body() body) {
+    console.log('body', body)
+    console.log('files', files)
   }
 }

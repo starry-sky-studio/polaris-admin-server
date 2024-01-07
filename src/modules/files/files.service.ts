@@ -5,10 +5,11 @@ import { PrismaService } from '@/shared/prisma/prisma.service'
 export class FilesService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async saveAvatar(avatarUrl: string, id) {
+  async saveAvatar(avatarUrl: string, id: number) {
     await this.prismaService.user.update({
       where: {
-        id
+        id,
+        deletedAt: null
       },
       data: {
         avatarUrl
