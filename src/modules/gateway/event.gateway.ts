@@ -19,16 +19,24 @@ export class EventGateway {
 
   @SubscribeMessage('newMessage') //为了访问已连接的socket实例
   handleMessage(@MessageBody() body: any, @ConnectedSocket() client: Socket): WsResponse<any> {
+    //只给单独的客户端发
     client.emit('onMessage')
     console.log(body, 'body')
+
     const event = 'newMessage'
     return { event, data: body }
   }
 
   @SubscribeMessage('events')
   handleEvent(@MessageBody() body: any, @ConnectedSocket() client: Socket) {
-    client.emit('onMessage', '1111')
-    return this.server.write('message', body)
+    // 通知其他客户端 chat 事件
+    client.broadcast.emit('message', body)
+    // this.server.write('message', body)
+    // this.server.emit('message', body)
+    // this.server.emit('message', 'emit')
+    // this.server.send('message', 'send')
+    // this.server.serverSideEmit('message', 'serverSideEmit')
+    return
   }
 
   @SubscribeMessage('foo')

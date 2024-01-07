@@ -15,6 +15,7 @@ import { APP_GUARD } from '@nestjs/core'
 import { LocalAuthGuard } from './guard'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { GatewayModule } from './modules/gateway/gateway.module'
+import { FilesModule } from './modules/files/files.module'
 
 @Module({
   imports: [
@@ -58,7 +59,8 @@ import { GatewayModule } from './modules/gateway/gateway.module'
     JwtModule.register({
       global: true
     }),
-    GatewayModule
+    GatewayModule,
+    FilesModule
   ],
   controllers: [AppController],
   providers: [
