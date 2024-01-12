@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import { LoginVo, TokenVo } from './vo'
 import { CreateUserDto } from '../user/dto/create-user.dto'
+import axios from 'axios'
 
 @Injectable()
 export class AuthService {
@@ -112,5 +113,40 @@ export class AuthService {
       return user
     }
     return null
+  }
+
+  // github 登录
+  async githubLogin(code: string) {
+    const clientID = 'c400d2b7375e790251a9'
+    const clientSecret = '2df0b56dd583c7ad315067d563dd01e30867d8ed'
+
+    const tokenResponse = await axios({
+      method: 'post',
+      url:
+        'https://github.com/login/oauth/access_token?' +
+        `client_id=${clientID}&` +
+        `client_secret=${clientSecret}&` +
+        `code=${code}`,
+      headers: {
+        accept: 'application/json'
+      }
+    })
+    console.log(tokenResponse, 'tokenResponse')
+    const { access_token } = tokenResponse.data ?? {}
+
+    const result = await axios({
+      method: 'get',
+      url: `https://api.github.com/user`,
+      headers: {
+        accept: 'application/json',
+        Authorization: `token ${access_token}`
+      }
+    })
+
+    console.log(result, 'result')
+
+    //const userInfo = result.data
+
+    //const { name } = result.data
   }
 }

@@ -4,7 +4,9 @@ import {
   NotImplementedException,
   ParseEnumPipe,
   Post,
-  Query
+  Query,
+  UnauthorizedException,
+  Get
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto'
@@ -47,9 +49,27 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: '刷新token' })
+  @SkipAuth()
   @ApiBody({})
   @Post('refresh')
   async refresh(@Body() refreshToken: RefreshToken) {
     return this.authService.refreshToken(refreshToken)
+  }
+
+  @Get('/github')
+  @SkipAuth()
+  async githubLogin(
+    @Query('code')
+    code: string
+  ) {
+    if (!code) {
+      throw new UnauthorizedException('github授权失败', {
+        cause: new Error(),
+        description: '没有授权'
+      })
+    }
+
+    await this.authService.githubLogin(code)
+    return '查询信息成功'
   }
 }

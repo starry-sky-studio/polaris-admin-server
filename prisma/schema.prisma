@@ -30,6 +30,8 @@ model User {
   auths       Auth[]
   /// 用户 - 角色
   userRoles   UserRole[]
+  ///用户 - github 信息
+  userGithub UserGithub[]
   /// 创建时间
   createdAt   DateTime?  @default(now()) @map("created_at") @db.Timestamptz(3)
   /// 创建人
@@ -60,7 +62,7 @@ enum AuthType {
 //认证
 model Auth {
   id           Int      @id @default(autoincrement())
-  authType     AuthType @map("auth_type'")
+  authType     AuthType @map("auth_type")
   openId       String   @map("open_id") @db.VarChar(50)
   accessToken  String?  @map("access_token") @db.VarChar(255)
   refreshToken String?  @map("refresh_token") @db.VarChar(255)
@@ -84,6 +86,36 @@ model Auth {
 
   @@unique([authType, openId])
   @@map("system_auth")
+}
+
+model UserGithub {
+  id   Int @id
+  user User @relation(fields: [userId], references: [id])
+  userId Int @map("user_id")
+  login String @db.VarChar(50)
+  nodeId String  @map("node_id") @db.VarChar(50)
+  avatarUrl String @map("avatar_url") @db.VarChar(50)
+  gravatarId String @map("gravatar_id") @db.VarChar(50)
+  url String @db.VarChar(50)
+  htmlUrl String @map("html_url") @db.VarChar(50)
+  followersUrl String @map("followers_url") @db.VarChar(50)
+  followingUrl String @map("following_url") @db.VarChar(50)
+  type String @db.VarChar(50)
+  siteAdmin String @map("site_admin")   @db.VarChar(50)
+  name String @db.VarChar(50)
+  company String @db.VarChar(50)
+  blog String @db.VarChar(50)
+  location String @db.VarChar(50)
+  email String @db.VarChar(50)
+  hireable Boolean   @default(true)
+  bio String @db.VarChar(50)
+  twitterUsername String @map("twitter_username") @db.VarChar(50)
+  publicRepos String @map("public_repos") @db.VarChar(50)
+  publicGists String @map("public_gists") @db.VarChar(50)
+  followers  Int @default(0)
+  following  Int @default(0)
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(3)
 }
 
 /// 角色
