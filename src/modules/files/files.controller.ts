@@ -7,13 +7,15 @@ import {
   UploadedFiles,
   HttpStatus,
   BadRequestException,
-  Param
+  Param,
+  Body
 } from '@nestjs/common'
 import { FilesService } from './files.service'
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 import { storage } from '@/utils'
 import * as path from 'path'
+import { SkipAuth } from '@/decorator'
 @ApiTags('文件上传')
 @Controller('files')
 export class FilesController {
@@ -104,10 +106,12 @@ export class FilesController {
   }
 
   @ApiOperation({ summary: '大图分片上传' })
+  @SkipAuth()
   @Post('large')
   @UseInterceptors(
     FilesInterceptor('files', 20, {
-      dest: 'uploads'
+      dest: 'uploads/large',
+      storage: storage('uploads/large')
     })
   )
   uploadLargeFiles(@UploadedFiles() files: Array<Express.Multer.File>, @Body() body) {

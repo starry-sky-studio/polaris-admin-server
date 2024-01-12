@@ -35,6 +35,7 @@ export class AuthController {
     )
     type: string
   ) {
+    console.log(loginDto, type)
     return this.authService.login(loginDto, type)
   }
 

@@ -22,6 +22,7 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto, type: string) {
+    console.log(loginDto, 'loginDto')
     let user: UserVo
     switch (type) {
       case LoginType.USERNAME:
@@ -47,6 +48,7 @@ export class AuthService {
   }
 
   async loginByUsername(loginDto: LoginDto) {
+    console.log(loginDto, 'LoginDto')
     const user = await this.prismaService.user.findUnique({
       where: {
         username: loginDto.username,
@@ -60,6 +62,7 @@ export class AuthService {
         }
       }
     })
+    console.log(user, 'user')
     if (!user) {
       throw new BadRequestException('用户不存在')
     }
@@ -85,12 +88,8 @@ export class AuthService {
   }
 
   async signup(signupDto: CreateUserDto) {
-    try {
-      await this.userService.create(signupDto)
-      return '创建成功'
-    } catch (e) {
-      return e
-    }
+    await this.userService.create(signupDto)
+    return '创建成功'
   }
 
   async refreshToken(refreshToken: RefreshToken) {
