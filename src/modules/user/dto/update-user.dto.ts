@@ -69,6 +69,12 @@ export class UpdateUserDto {
   @IsOptional()
   city?: string
 
+  @ApiPropertyOptional({ description: '地址' })
+  @MaxLength(25, { message: '地址最大长度25' })
+  @IsString({ message: '地址为字符串' })
+  @IsOptional()
+  address?: string
+
   @ApiPropertyOptional({ description: '个人简介' })
   @MaxLength(500, { message: '个人简介最大长度500' })
   @IsString({ message: '个人简介为字符串' })

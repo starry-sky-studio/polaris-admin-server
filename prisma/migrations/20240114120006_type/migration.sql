@@ -15,6 +15,7 @@ CREATE TABLE "system_user" (
     "country" VARCHAR(25),
     "province" VARCHAR(25),
     "city" VARCHAR(25),
+    "address" VARCHAR(25),
     "website" VARCHAR(50),
     "enabled" BOOLEAN NOT NULL DEFAULT true,
     "birth_date" DATE,
@@ -31,7 +32,7 @@ CREATE TABLE "system_user" (
 -- CreateTable
 CREATE TABLE "system_auth" (
     "id" SERIAL NOT NULL,
-    "auth_type'" "AuthType" NOT NULL,
+    "auth_type" "AuthType" NOT NULL,
     "open_id" VARCHAR(50) NOT NULL,
     "access_token" VARCHAR(255),
     "refresh_token" VARCHAR(255),
@@ -44,6 +45,38 @@ CREATE TABLE "system_auth" (
     "deleted_by" INTEGER,
 
     CONSTRAINT "system_auth_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserGithub" (
+    "id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "login" VARCHAR(50) NOT NULL,
+    "node_id" VARCHAR(50) NOT NULL,
+    "avatar_url" VARCHAR(50) NOT NULL,
+    "gravatar_id" VARCHAR(50) NOT NULL,
+    "url" VARCHAR(50) NOT NULL,
+    "html_url" VARCHAR(50) NOT NULL,
+    "followers_url" VARCHAR(50) NOT NULL,
+    "following_url" VARCHAR(50) NOT NULL,
+    "type" VARCHAR(50) NOT NULL,
+    "site_admin" VARCHAR(50) NOT NULL,
+    "name" VARCHAR(50) NOT NULL,
+    "company" VARCHAR(50) NOT NULL,
+    "blog" VARCHAR(50) NOT NULL,
+    "location" VARCHAR(50) NOT NULL,
+    "email" VARCHAR(50) NOT NULL,
+    "hireable" BOOLEAN NOT NULL DEFAULT true,
+    "bio" VARCHAR(50) NOT NULL,
+    "twitter_username" VARCHAR(50) NOT NULL,
+    "public_repos" VARCHAR(50) NOT NULL,
+    "public_gists" VARCHAR(50) NOT NULL,
+    "followers" INTEGER NOT NULL DEFAULT 0,
+    "following" INTEGER NOT NULL DEFAULT 0,
+    "created_at" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UserGithub_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -172,7 +205,19 @@ CREATE UNIQUE INDEX "system_user_username_key" ON "system_user"("username");
 CREATE UNIQUE INDEX "system_user_email_key" ON "system_user"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "system_auth_auth_type'_open_id_key" ON "system_auth"("auth_type'", "open_id");
+CREATE INDEX "system_user_username_idx" ON "system_user"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "system_auth_auth_type_open_id_key" ON "system_auth"("auth_type", "open_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserGithub_id_key" ON "UserGithub"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserGithub_user_id_key" ON "UserGithub"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserGithub_login_key" ON "UserGithub"("login");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "system_role_code_key" ON "system_role"("code");
@@ -182,6 +227,9 @@ CREATE UNIQUE INDEX "system_dictionary_code_key" ON "system_dictionary"("code");
 
 -- AddForeignKey
 ALTER TABLE "system_auth" ADD CONSTRAINT "system_auth_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "system_user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserGithub" ADD CONSTRAINT "UserGithub_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "system_user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "system_user_role" ADD CONSTRAINT "system_user_role_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "system_user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

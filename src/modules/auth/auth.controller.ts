@@ -68,8 +68,7 @@ export class AuthController {
         description: '没有授权'
       })
     }
-
-    await this.authService.githubLogin(code)
-    return '查询信息成功'
+    const user = await this.authService.loginByGithub(code)
+    return user
   }
 }

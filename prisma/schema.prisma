@@ -23,6 +23,7 @@ model User {
   country     String?    @db.VarChar(25)
   province    String?    @db.VarChar(25)
   city        String?    @db.VarChar(25)
+  address     String?    @db.VarChar(25)
   website     String?    @db.VarChar(50)
   enabled     Boolean    @default(true)
   birthDate   DateTime?  @map("birth_date") @db.Date
@@ -31,7 +32,7 @@ model User {
   /// 用户 - 角色
   userRoles   UserRole[]
   ///用户 - github 信息
-  userGithub UserGithub[]
+  UserGithub  UserGithub?
   /// 创建时间
   createdAt   DateTime?  @default(now()) @map("created_at") @db.Timestamptz(3)
   /// 创建人
@@ -46,6 +47,7 @@ model User {
   deletedBy   Int?       @map("deleted_by")
 
   @@map("system_user")
+  @@index([username])
 }
 
 /// 认证类型
@@ -59,10 +61,13 @@ enum AuthType {
   ALIPAY
 }
 
+
+
+
 //认证
 model Auth {
   id           Int      @id @default(autoincrement())
-  authType     AuthType @map("auth_type")
+  authType     AuthType  @map("auth_type") 
   openId       String   @map("open_id") @db.VarChar(50)
   accessToken  String?  @map("access_token") @db.VarChar(255)
   refreshToken String?  @map("refresh_token") @db.VarChar(255)
@@ -89,10 +94,10 @@ model Auth {
 }
 
 model UserGithub {
-  id   Int @id
+  id   Int @id @unique
   user User @relation(fields: [userId], references: [id])
-  userId Int @map("user_id")
-  login String @db.VarChar(50)
+  userId Int @map("user_id") @unique
+  login String @db.VarChar(50) @unique
   nodeId String  @map("node_id") @db.VarChar(50)
   avatarUrl String @map("avatar_url") @db.VarChar(50)
   gravatarId String @map("gravatar_id") @db.VarChar(50)

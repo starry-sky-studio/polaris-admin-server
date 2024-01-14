@@ -8,7 +8,9 @@ import {
   HttpStatus,
   BadRequestException,
   Param,
-  Body
+  Body,
+  Get,
+  Query
 } from '@nestjs/common'
 import { FilesService } from './files.service'
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
@@ -16,6 +18,7 @@ import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestj
 import { storage } from '@/utils'
 import * as path from 'path'
 import { SkipAuth } from '@/decorator'
+import * as fs from 'fs'
 @ApiTags('文件上传')
 @Controller('files')
 export class FilesController {
@@ -110,12 +113,58 @@ export class FilesController {
   @Post('large')
   @UseInterceptors(
     FilesInterceptor('files', 20, {
-      dest: 'uploads/large',
-      storage: storage('uploads/large')
+      dest: 'uploads/large'
     })
   )
   uploadLargeFiles(@UploadedFiles() files: Array<Express.Multer.File>, @Body() body) {
-    console.log('body', body)
-    console.log('files', files)
+    // const fileName = body.name.match(/(.+)\d+$/)[1]
+    const fileName = body.name.substring(0, body.name.lastIndexOf('-'))
+    console.log(fileName, 'fileName')
+    const chunkDir = 'uploads/large/chunks_' + fileName
+    console.log(chunkDir, 'body')
+    if (!fs.existsSync(chunkDir)) {
+      fs.mkdirSync(chunkDir)
+    }
+    fs.cpSync(files[0].path, chunkDir + '/' + body.name)
+    fs.rmSync(files[0].path)
+    return '上传成功'
+  }
+
+  @ApiOperation({ summary: '大图分片合并' })
+  @Get('merge')
+  @SkipAuth()
+  merge(@Query('name') name: string) {
+    const chunkDir = 'uploads/large/chunks_' + name
+    const files = fs.readdirSync(chunkDir)
+    console.log(files, 'mergeFiles')
+    let startPos = 0
+    let count = 0
+    files.map((file) => {
+      const filePath = chunkDir + '/' + file
+      // 创建可读流 从文件中读取数据
+      const stream = fs.createReadStream(filePath)
+      // 创建可写流 将数据写入最终的文件
+      stream
+        .pipe(
+          fs.createWriteStream('uploads/large' + name, {
+            start: startPos
+          })
+        )
+        .on('finish', () => {
+          count++
+          if (count === files.length) {
+            fs.rm(
+              chunkDir,
+              {
+                recursive: true
+              },
+              () => {}
+            )
+          }
+        })
+      // 更新下一个切片的起始位置
+      startPos += fs.statSync(filePath).size
+    })
+    return '合并文件成功'
   }
 }
