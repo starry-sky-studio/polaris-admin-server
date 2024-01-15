@@ -123,6 +123,31 @@ model UserGithub {
   updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(3)
 }
 
+/// 登录日志
+model LoginLog{
+  /// 唯一标识
+  id      Int     @id @default(autoincrement())
+  userName String  @db.VarChar(50)
+  ip  String  @db.VarChar(50)
+  address  String  @db.VarChar(50)
+  browser  String  @db.VarChar(50)
+  os  String @db.VarChar(50)
+  status Boolean @default(true)
+  /// 创建时间
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy Int?      @map("created_by")
+  /// 更新时间
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy Int?      @map("updated_by")
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy Int?      @map("deleted_by")
+  @@map("system_login_log")
+}
+
 /// 角色
 model Role {
   /// 唯一标识

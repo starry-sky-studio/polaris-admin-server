@@ -59,6 +59,9 @@ dependencies:
   dayjs:
     specifier: ^1.11.10
     version: 1.11.10
+  ip2region:
+    specifier: ^2.3.0
+    version: 2.3.0(@types/node@20.10.0)
   nodemon:
     specifier: ^3.0.2
     version: 3.0.2
@@ -83,6 +86,9 @@ dependencies:
   socket.io:
     specifier: ^4.7.3
     version: 4.7.3
+  ua-parser-js:
+    specifier: ^1.0.37
+    version: 1.0.37
   winston:
     specifier: ^3.11.0
     version: 3.11.0
@@ -5098,6 +5104,14 @@ packages:
     engines: {node: '>= 0.10'}
     dev: true
 
+  /ip2region@2.3.0(@types/node@20.10.0):
+    resolution: {integrity: sha512-zV5Xsadzrx9Ej6heoyhbXMsfGWWQ3C6bAIYStrHhw9kzLpGpVNlnAyRBxxPgxA1GNqr1Ti7oUxcWsMWNN3jZBg==}
+    peerDependencies:
+      '@types/node': '*'
+    dependencies:
+      '@types/node': 20.10.0
+    dev: false
+
   /ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
@@ -7983,6 +7997,10 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
+
+  /ua-parser-js@1.0.37:
+    resolution: {integrity: sha512-bhTyI94tZofjo+Dn8SN6Zv8nBDvyXTymAdM3LDI/0IboIUwTu1rEhW7v2TfiVsoYWgkQ4kOVqnI8APUFbIQIFQ==}
+    dev: false
 
   /uid@2.0.2:
     resolution: {integrity: sha512-u3xV3X7uzvi5b1MncmZo3i2Aw222Zk1keqLA1YkHldREkAhAqi65wuPfe7lHx8H/Wzy+8CE7S7uS3jekIM5s8g==}

@@ -6,16 +6,19 @@ import {
   Post,
   Query,
   UnauthorizedException,
-  Get
+  Get,
+  Req
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto'
-import { LoginType } from '@/enums'
-
+import { AuthType } from '@prisma/client'
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from '../user/dto/create-user.dto'
 import { RefreshToken } from '@/interface'
 import { SkipAuth } from '@/decorator'
+import { Request } from 'express'
+import { UAParser } from 'ua-parser-js'
+import IP2Region from 'ip2region'
 
 @ApiTags('权限认证')
 @Controller('auth')
@@ -29,16 +32,37 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Query(
       'type',
-      new ParseEnumPipe(LoginType, {
+      new ParseEnumPipe(AuthType, {
         exceptionFactory: () => {
           throw new NotImplementedException('请选择正确的登录类型')
         }
       })
     )
-    type: string
+    type: string,
+
+    @Req() request: Request
   ) {
-    console.log(loginDto, type)
-    return this.authService.login(loginDto, type)
+    //console.log(request, 'request')
+    console.log(request.ip, 'request.ip')
+
+    const userAgent = request.headers['user-agent']
+    console.log(userAgent, 'userAgent')
+    const parser = new UAParser()
+    const result = parser.setUA(userAgent).getResult()
+    console.log(result, 'parser')
+    console.log(result.browser.name)
+    // const ip = request.ip
+    // const userName = 'userName'
+    // const browser = result.browser.name
+    // const os = result.browser.os
+    // const status = true
+    // const address = ''
+
+    const query = new IP2Region()
+    const res = query.search('192.168.10.105')
+    console.log(res, 'res')
+    //return [res.province, res.city].join(' ')
+    return this.authService.login(type, loginDto)
   }
 
   @ApiOperation({ summary: '注册' })
@@ -60,7 +84,16 @@ export class AuthController {
   @SkipAuth()
   async githubLogin(
     @Query('code')
-    code: string
+    code: string,
+    @Query(
+      'type',
+      new ParseEnumPipe(AuthType, {
+        exceptionFactory: () => {
+          throw new NotImplementedException('请选择正确的登录类型')
+        }
+      })
+    )
+    type: AuthType
   ) {
     if (!code) {
       throw new UnauthorizedException('github授权失败', {
@@ -68,7 +101,7 @@ export class AuthController {
         description: '没有授权'
       })
     }
-    const user = await this.authService.loginByGithub(code)
+    const user = await this.authService.login(type, undefined, code)
     return user
   }
 }

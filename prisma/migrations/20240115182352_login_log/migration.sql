@@ -80,6 +80,25 @@ CREATE TABLE "UserGithub" (
 );
 
 -- CreateTable
+CREATE TABLE "system_login_log" (
+    "id" SERIAL NOT NULL,
+    "userName" VARCHAR(50) NOT NULL,
+    "ip" VARCHAR(50) NOT NULL,
+    "address" VARCHAR(50) NOT NULL,
+    "browser" VARCHAR(50) NOT NULL,
+    "os" VARCHAR(50) NOT NULL,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_by" INTEGER,
+    "updated_at" TIMESTAMPTZ(3),
+    "updated_by" INTEGER,
+    "deleted_at" TIMESTAMPTZ(3),
+    "deleted_by" INTEGER,
+
+    CONSTRAINT "system_login_log_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "system_role" (
     "id" SERIAL NOT NULL,
     "code" VARCHAR(50) NOT NULL,

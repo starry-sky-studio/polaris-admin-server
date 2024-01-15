@@ -12,7 +12,9 @@ import { LoginVo, TokenVo } from './vo'
 import { CreateUserDto } from '../user/dto/create-user.dto'
 import axios from 'axios'
 import { AuthType } from '@prisma/client'
-import { generateRandomString } from '@/utils'
+import { generateRandomString, getAddressByIp, getbrowserOs } from '@/utils'
+import { Request } from 'express'
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -22,21 +24,27 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
-  async login(loginDto: LoginDto, type: string) {
+  async login(type: string, loginDto?: LoginDto, code?: string) {
     console.log(loginDto, 'loginDto')
     let user: UserVo
     switch (type) {
       case AuthType.USERNAME:
-        user = await this.loginByUsername(loginDto)
+        try {
+          user = await this.loginByUsername(loginDto)
+        } catch {
+          console.log(user, 'user')
+        }
+
         break
       case AuthType.GITHUB:
-        //user = await this.loginByGithub(loginDto)
+        user = await this.loginByGithub(code)
         break
       default:
         break
     }
 
     const { id, username } = user
+    console.log(user, 'user')
 
     const token = this.generateTokens({
       sub: id,
@@ -52,7 +60,6 @@ export class AuthService {
   }
 
   async loginByUsername(loginDto: LoginDto) {
-    console.log(loginDto, 'LoginDto')
     const user = await this.prismaService.user.findUnique({
       where: {
         username: loginDto.username,
@@ -66,7 +73,7 @@ export class AuthService {
         }
       }
     })
-    console.log(user, 'user')
+
     if (!user) {
       throw new BadRequestException('用户不存在')
     }
@@ -74,26 +81,12 @@ export class AuthService {
     if (!(await compare(loginDto.password, user.password ?? ''))) {
       throw new BadRequestException('密码错误')
     }
+
     return plainToClass(UserVo, user)
-  }
-
-  generateTokens(jwtPayload: JwtPayload) {
-    return {
-      accessToken: this.jwtService.sign(jwtPayload, {
-        secret: this.configService.get('jwt.accessTokenSecret'),
-
-        expiresIn: this.configService.get('jwt.accessTokenExp')
-      }),
-      refreshToken: this.jwtService.sign(jwtPayload, {
-        secret: this.configService.get('jwt.refreshTokenSecret'),
-        expiresIn: this.configService.get('jwt.refreshTokenExp')
-      })
-    }
   }
 
   async signup(signupDto: CreateUserDto) {
     await this.userService.create(signupDto)
-
     return '创建成功'
   }
 
@@ -127,8 +120,6 @@ export class AuthService {
     let resultData: any
     let accessToken: string
 
-    // access_token: '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',
-    // token_type: 'bearer',
     try {
       const tokenResponse = await axios({
         method: 'post',
@@ -225,15 +216,9 @@ export class AuthService {
 
       return plainToClass(UserVo, user)
     } else {
-      const user = await this.prismaService.user.update({
+      const user = await this.prismaService.user.findFirst({
         where: {
           id: authUser.userId
-        },
-        data: {
-          nickName: githubUserData.name ?? githubUserData.login,
-          avatarUrl: githubUserData.avatarUrl,
-          biography: githubUserData.bio,
-          address: githubUserData.location
         }
       })
 
@@ -252,5 +237,38 @@ export class AuthService {
     //2.2 情况2：本地未登录，再次登录第三方
 
     //2.3 情况3：本地登录，并绑定第三方
+  }
+
+  //生成双token
+  generateTokens(jwtPayload: JwtPayload) {
+    return {
+      accessToken: this.jwtService.sign(jwtPayload, {
+        secret: this.configService.get('jwt.accessTokenSecret'),
+        expiresIn: this.configService.get('jwt.accessTokenExp')
+      }),
+      refreshToken: this.jwtService.sign(jwtPayload, {
+        secret: this.configService.get('jwt.refreshTokenSecret'),
+        expiresIn: this.configService.get('jwt.refreshTokenExp')
+      })
+    }
+  }
+
+  /**
+   * @description 得到登录日志信息
+   * @date 2024/01/16
+   * @returns {}
+   */
+  getLoginLog(request: Request, state: boolean, username: string) {
+    const ip = request.ip
+    const address = getAddressByIp(ip)
+    const { browser, os } = getbrowserOs(request)
+    return {
+      ip,
+      state,
+      address,
+      browser,
+      os,
+      username
+    }
   }
 }
