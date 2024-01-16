@@ -27,12 +27,15 @@ export class AuthService {
   async login(type: string, loginDto?: LoginDto, code?: string, req?: Request) {
     console.log(loginDto, 'loginDto')
     let user: UserVo
+    let authType: AuthType
     switch (type) {
       case AuthType.USERNAME:
+        authType = AuthType.USERNAME
         user = await this.loginByUsername(loginDto, req)
 
         break
       case AuthType.GITHUB:
+        authType = AuthType.GITHUB
         user = await this.loginByGithub(code)
         break
       default:
@@ -52,7 +55,7 @@ export class AuthService {
       ...token
     })
 
-    const loginLog = this.getLoginLog(req, true, loginDto.username, '登录成功')
+    const loginLog = this.getLoginLog(req, true, loginDto.username, '登录成功', authType)
     await this.loginLog(loginLog)
 
     return loginVo
@@ -82,7 +85,7 @@ export class AuthService {
     }
 
     if (errorMsg) {
-      const loginLog = this.getLoginLog(req, false, loginDto.username, errorMsg)
+      const loginLog = this.getLoginLog(req, false, loginDto.username, errorMsg, AuthType.USERNAME)
       await this.loginLog(loginLog)
       throw new BadRequestException(errorMsg)
     }
@@ -263,7 +266,13 @@ export class AuthService {
    * @date 2024/01/16
    * @returns LoginLogDto
    */
-  getLoginLog(request: Request, status: boolean, username: string, message: string): LoginLogDto {
+  getLoginLog(
+    request: Request,
+    status: boolean,
+    username: string,
+    message: string,
+    authType: AuthType
+  ): LoginLogDto {
     const ip = request.ip ?? ''
     const address = getAddressByIp(ip)
     const { browser, os } = getbrowserOs(request) ?? {}
@@ -274,7 +283,8 @@ export class AuthService {
       browser,
       os,
       username,
-      message
+      message,
+      authType
     }
   }
 

@@ -62,6 +62,9 @@ dependencies:
   ip2region:
     specifier: ^2.3.0
     version: 2.3.0(@types/node@20.10.0)
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   nodemon:
     specifier: ^3.0.2
     version: 3.0.2

@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
+import { AuthType } from '@prisma/client'
 
 export class LoginLogDto {
   @ApiProperty({ description: '用户名' })
@@ -21,6 +22,9 @@ export class LoginLogDto {
   @ApiProperty({ description: '是否在线' })
   status: boolean
 
-  @ApiProperty({ description: '登录信息' })
-  message: string
+  @ApiPropertyOptional({ description: '登录信息' })
+  message?: string
+
+  @ApiProperty({ description: '认证类型' })
+  authType: AuthType
 }

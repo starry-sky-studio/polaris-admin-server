@@ -89,6 +89,7 @@ CREATE TABLE "system_login_log" (
     "os" VARCHAR(50) NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "message" VARCHAR(50),
+    "auth_type" "AuthType" NOT NULL,
     "created_at" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
     "created_by" INTEGER,
     "updated_at" TIMESTAMPTZ(3),
