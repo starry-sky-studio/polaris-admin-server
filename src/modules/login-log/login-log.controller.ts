@@ -11,6 +11,6 @@ export class LoginLogController {
   @ApiOperation({ summary: '获取登录信息' })
   @Get()
   findAll(@Query() pageDto: PageDto) {
-    return this.loginLogService.findAll(pageDto)
+    return this.loginLogService.findMany(pageDto)
   }
 }
