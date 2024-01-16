@@ -17,8 +17,6 @@ import { CreateUserDto } from '../user/dto/create-user.dto'
 import { RefreshToken } from '@/interface'
 import { SkipAuth } from '@/decorator'
 import { Request } from 'express'
-import { UAParser } from 'ua-parser-js'
-import IP2Region from 'ip2region'
 
 @ApiTags('权限认证')
 @Controller('auth')
@@ -28,7 +26,7 @@ export class AuthController {
   @ApiOperation({ summary: '登录' })
   @SkipAuth()
   @Post('login')
-  login(
+  async login(
     @Body() loginDto: LoginDto,
     @Query(
       'type',
@@ -43,26 +41,28 @@ export class AuthController {
     @Req() request: Request
   ) {
     //console.log(request, 'request')
-    console.log(request.ip, 'request.ip')
+    // console.log(request.ip, 'request.ip')
 
-    const userAgent = request.headers['user-agent']
-    console.log(userAgent, 'userAgent')
-    const parser = new UAParser()
-    const result = parser.setUA(userAgent).getResult()
-    console.log(result, 'parser')
-    console.log(result.browser.name)
-    // const ip = request.ip
+    // const userAgent = request.headers['user-agent']
+    // console.log(userAgent, 'userAgent')
+    // const parser = new UAParser()
+    // const result = parser.setUA(userAgent).getResult()
+    // console.log(result, 'parser')
+    // console.log(result.browser.name, result.browser.os)
+    // // const ip = request.ip
     // const userName = 'userName'
     // const browser = result.browser.name
-    // const os = result.browser.os
+    // const os =
     // const status = true
     // const address = ''
 
-    const query = new IP2Region()
-    const res = query.search('192.168.10.105')
-    console.log(res, 'res')
+    // const query = new IP2Region()
+    // const res = query.search('192.168.10.105')
+    // console.log(res, 'res')
+    const a = await this.authService.login(type, loginDto, '', request)
+    console.log(a, 'a')
     //return [res.province, res.city].join(' ')
-    return this.authService.login(type, loginDto)
+    return a
   }
 
   @ApiOperation({ summary: '注册' })

@@ -82,12 +82,13 @@ CREATE TABLE "UserGithub" (
 -- CreateTable
 CREATE TABLE "system_login_log" (
     "id" SERIAL NOT NULL,
-    "userName" VARCHAR(50) NOT NULL,
+    "username" VARCHAR(50) NOT NULL,
     "ip" VARCHAR(50) NOT NULL,
     "address" VARCHAR(50) NOT NULL,
     "browser" VARCHAR(50) NOT NULL,
     "os" VARCHAR(50) NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
+    "message" VARCHAR(50),
     "created_at" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
     "created_by" INTEGER,
     "updated_at" TIMESTAMPTZ(3),

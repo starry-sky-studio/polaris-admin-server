@@ -127,12 +127,13 @@ model UserGithub {
 model LoginLog{
   /// 唯一标识
   id      Int     @id @default(autoincrement())
-  userName String  @db.VarChar(50)
+  username String  @db.VarChar(50) 
   ip  String  @db.VarChar(50)
   address  String  @db.VarChar(50)
   browser  String  @db.VarChar(50)
   os  String @db.VarChar(50)
   status Boolean @default(true)
+  message String? @db.VarChar(50)
   /// 创建时间
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(3)
   /// 创建人

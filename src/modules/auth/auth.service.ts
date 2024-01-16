@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
-import { LoginDto } from './dto'
+import { LoginDto, LoginLogDto } from './dto'
 import { PrismaService } from 'src/shared/prisma/prisma.service'
 import { UserService } from '../user/user.service'
 import { compare, hash } from '@node-rs/bcrypt'
@@ -24,16 +24,12 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
-  async login(type: string, loginDto?: LoginDto, code?: string) {
+  async login(type: string, loginDto?: LoginDto, code?: string, req?: Request) {
     console.log(loginDto, 'loginDto')
     let user: UserVo
     switch (type) {
       case AuthType.USERNAME:
-        try {
-          user = await this.loginByUsername(loginDto)
-        } catch {
-          console.log(user, 'user')
-        }
+        user = await this.loginByUsername(loginDto, req)
 
         break
       case AuthType.GITHUB:
@@ -56,10 +52,13 @@ export class AuthService {
       ...token
     })
 
+    const loginLog = this.getLoginLog(req, true, loginDto.username, '登录成功')
+    await this.loginLog(loginLog)
+
     return loginVo
   }
 
-  async loginByUsername(loginDto: LoginDto) {
+  async loginByUsername(loginDto: LoginDto, req?: Request) {
     const user = await this.prismaService.user.findUnique({
       where: {
         username: loginDto.username,
@@ -74,12 +73,18 @@ export class AuthService {
       }
     })
 
+    let errorMsg = ''
+
     if (!user) {
-      throw new BadRequestException('用户不存在')
+      errorMsg = '用户不存在'
+    } else if (!(await compare(loginDto.password, user.password ?? ''))) {
+      errorMsg = '密码错误'
     }
 
-    if (!(await compare(loginDto.password, user.password ?? ''))) {
-      throw new BadRequestException('密码错误')
+    if (errorMsg) {
+      const loginLog = this.getLoginLog(req, false, loginDto.username, errorMsg)
+      await this.loginLog(loginLog)
+      throw new BadRequestException(errorMsg)
     }
 
     return plainToClass(UserVo, user)
@@ -256,19 +261,33 @@ export class AuthService {
   /**
    * @description 得到登录日志信息
    * @date 2024/01/16
-   * @returns {}
+   * @returns LoginLogDto
    */
-  getLoginLog(request: Request, state: boolean, username: string) {
-    const ip = request.ip
+  getLoginLog(request: Request, status: boolean, username: string, message: string): LoginLogDto {
+    const ip = request.ip ?? ''
     const address = getAddressByIp(ip)
-    const { browser, os } = getbrowserOs(request)
+    const { browser, os } = getbrowserOs(request) ?? {}
     return {
       ip,
-      state,
+      status,
       address,
       browser,
       os,
-      username
+      username,
+      message
     }
+  }
+
+  /**
+   * @description 设置登录日志信息
+   * @date 2024/01/16
+   * @returns
+   */
+  async loginLog(loginLogDto: LoginLogDto) {
+    await this.prismaService.loginLog.create({
+      data: {
+        ...loginLogDto
+      }
+    })
   }
 }
