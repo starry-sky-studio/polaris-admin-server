@@ -40,29 +40,7 @@ export class AuthController {
 
     @Req() request: Request
   ) {
-    //console.log(request, 'request')
-    // console.log(request.ip, 'request.ip')
-
-    // const userAgent = request.headers['user-agent']
-    // console.log(userAgent, 'userAgent')
-    // const parser = new UAParser()
-    // const result = parser.setUA(userAgent).getResult()
-    // console.log(result, 'parser')
-    // console.log(result.browser.name, result.browser.os)
-    // // const ip = request.ip
-    // const userName = 'userName'
-    // const browser = result.browser.name
-    // const os =
-    // const status = true
-    // const address = ''
-
-    // const query = new IP2Region()
-    // const res = query.search('192.168.10.105')
-    // console.log(res, 'res')
-    const a = await this.authService.login(type, loginDto, '', request)
-    console.log(a, 'a')
-    //return [res.province, res.city].join(' ')
-    return a
+    return await this.authService.login(type, loginDto, '', request)
   }
 
   @ApiOperation({ summary: '注册' })

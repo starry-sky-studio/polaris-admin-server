@@ -16,6 +16,7 @@ import { LocalAuthGuard } from './guard'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { GatewayModule } from './modules/gateway/gateway.module'
 import { FilesModule } from './modules/files/files.module'
+import { LoginLogModule } from './modules/login-log/login-log.module'
 
 @Module({
   imports: [
@@ -60,7 +61,8 @@ import { FilesModule } from './modules/files/files.module'
       global: true
     }),
     GatewayModule,
-    FilesModule
+    FilesModule,
+    LoginLogModule
   ],
   controllers: [AppController],
   providers: [
