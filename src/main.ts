@@ -1,10 +1,9 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { WINSTON_LOGGER_TOKEN } from './winston/winston.module'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
 import { HttpExceptionFilter } from './filter/http-exception.filter'
-import { FormatResponseInterceptor, LoggingInterceptor } from './interceptor'
+import { FormatResponseInterceptor, InvokeRecordInterceptor } from './interceptor'
 import { PrismaExceptionFilter } from './filter'
 
 async function bootstrap() {
@@ -14,6 +13,12 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe())
 
+  // 全局拦截器 - 响应格式化
+  app.useGlobalInterceptors(new FormatResponseInterceptor())
+
+  // 全局拦截器 - 响应格式日志显示
+  app.useGlobalInterceptors(new InvokeRecordInterceptor())
+
   // 全局过滤器 - 异常处理
   app.useGlobalFilters(new HttpExceptionFilter())
 
@@ -21,10 +26,7 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaExceptionFilter())
 
   // 全局拦截器 - 日志
-  app.useGlobalInterceptors(new LoggingInterceptor())
-
-  // 全局拦截器 - 响应格式化
-  app.useGlobalInterceptors(new FormatResponseInterceptor())
+  //app.useGlobalInterceptors(new LoggingInterceptor())
 
   const config = new DocumentBuilder()
     .setTitle('Text example')
@@ -51,7 +53,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('doc', app, document)
 
-  app.useLogger(app.get(WINSTON_LOGGER_TOKEN))
+  //app.useLogger(app.get(WINSTON_LOGGER_TOKEN))
   app.enableCors()
 
   await app.listen(3000)

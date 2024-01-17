@@ -1,2 +1,2 @@
 export * from './format-response.interceptor'
-export * from './Logging.Interceptor'
+export * from './invoke-record.interceptor'

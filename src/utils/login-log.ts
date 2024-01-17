@@ -25,7 +25,7 @@ export const getbrowserOs = (request: Request) => {
   const parser = new UAParser()
   const result = parser.setUA(userAgent).getResult()
   return {
-    browser: result.browser.name,
-    os: result.os.name
+    browser: result.browser.name ?? '',
+    os: result.os.name ?? ''
   } as const
 }
