@@ -1,25 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, NotContains, IsPositive, IsString, MaxLength } from 'class-validator'
+import { IsNotEmpty, IsPositive, IsString, MaxLength } from 'class-validator'
 
 export class CreateArticleDto {
   @ApiProperty({ description: '作者名' })
   @MaxLength(50, { message: '作者名最大长度50' })
   @IsString({ message: '作者名应该为字符串' })
-  @NotContains(' ', { message: '作者名不能包含空格' })
   @IsNotEmpty({ message: '作者名不能为空' })
   author: string
 
   @ApiProperty({ description: '标题' })
   @MaxLength(50, { message: '标题最大长度50' })
   @IsString({ message: '标题应该为字符串' })
-  @NotContains(' ', { message: '标题不能包含空格' })
   @IsNotEmpty({ message: '标题不能为空' })
   title: string
 
   @ApiProperty({ description: '内容' })
   @MaxLength(50, { message: '内容最大长度500' })
   @IsString({ message: '内容应该为字符串' })
-  @NotContains(' ', { message: '内容不能包含空格' })
   @IsNotEmpty({ message: '内容不能为空' })
   content: string
 

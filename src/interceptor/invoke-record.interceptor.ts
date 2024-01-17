@@ -22,10 +22,6 @@ export class InvokeRecordInterceptor implements NestInterceptor {
       } invoked...`
     )
 
-    this.logger.debug('111111')
-
-    console.log('拦截器', ip, method, path)
-
     this.logger.debug(`user: ${request.user?.userId}, ${request.user?.username}`)
 
     const now = Date.now()

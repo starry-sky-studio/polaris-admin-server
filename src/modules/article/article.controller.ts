@@ -55,7 +55,7 @@ export class ArticleController {
 
   @ApiOperation({ summary: '阅读量统计' })
   @Get(':id/view')
-  async view(@Param('id') id: string) {
-    return await this.articleService.view(+id)
+  async view(@Param('id') id: string, @UserInfo('userId') userId: number) {
+    return await this.articleService.view(+id, userId)
   }
 }

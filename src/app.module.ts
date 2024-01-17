@@ -4,7 +4,6 @@ import { AppService } from './app.service'
 import { WinstonModule } from './winston/winston.module'
 import { transports, format } from 'winston'
 import * as chalk from 'chalk'
-
 import { JwtModule } from '@nestjs/jwt'
 import { AuthModule } from './modules/auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
@@ -18,9 +17,14 @@ import { GatewayModule } from './modules/gateway/gateway.module'
 import { FilesModule } from './modules/files/files.module'
 import { LoginLogModule } from './modules/login-log/login-log.module'
 import { ArticleModule } from './modules/article/article.module'
+import { RedisModule } from './shared/redis/redis.module'
+import { ScheduleModule } from '@nestjs/schedule'
+import { ScheduleTasksService } from './modules/schedule-tasks/schedule-tasks.service'
+import { ScheduleTasksModule } from './modules/schedule-tasks/schedule-tasks.module'
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env'],
@@ -54,17 +58,18 @@ import { ArticleModule } from './modules/article/article.module'
         })
       ]
     }),
-
-    AuthModule,
     PrismaModule,
-    UserModule,
+    RedisModule,
     JwtModule.register({
       global: true
     }),
+    AuthModule,
+    UserModule,
     GatewayModule,
     FilesModule,
     LoginLogModule,
-    ArticleModule
+    ArticleModule,
+    ScheduleTasksModule
   ],
   controllers: [AppController],
   providers: [
@@ -76,7 +81,8 @@ import { ArticleModule } from './modules/article/article.module'
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
-    }
+    },
+    ScheduleTasksService
   ]
 })
 export class AppModule {}
