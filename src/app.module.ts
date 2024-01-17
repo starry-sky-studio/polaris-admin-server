@@ -17,6 +17,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { GatewayModule } from './modules/gateway/gateway.module'
 import { FilesModule } from './modules/files/files.module'
 import { LoginLogModule } from './modules/login-log/login-log.module'
+import { ArticleModule } from './modules/article/article.module'
 
 @Module({
   imports: [
@@ -62,7 +63,8 @@ import { LoginLogModule } from './modules/login-log/login-log.module'
     }),
     GatewayModule,
     FilesModule,
-    LoginLogModule
+    LoginLogModule,
+    ArticleModule
   ],
   controllers: [AppController],
   providers: [

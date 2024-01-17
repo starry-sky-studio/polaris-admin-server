@@ -219,6 +219,26 @@ CREATE TABLE "system_dictionary_item" (
     CONSTRAINT "system_dictionary_item_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Article" (
+    "id" SERIAL NOT NULL,
+    "author" VARCHAR(50) NOT NULL,
+    "title" VARCHAR(50) NOT NULL,
+    "content" VARCHAR(255) NOT NULL,
+    "viewCount" INTEGER NOT NULL DEFAULT 0,
+    "likeCount" INTEGER NOT NULL DEFAULT 0,
+    "collectCount" INTEGER NOT NULL DEFAULT 0,
+    "watchCount" INTEGER NOT NULL DEFAULT 0,
+    "created_at" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_by" INTEGER,
+    "updated_at" TIMESTAMPTZ(3),
+    "updated_by" INTEGER,
+    "deleted_at" TIMESTAMPTZ(3),
+    "deleted_by" INTEGER,
+
+    CONSTRAINT "Article_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "system_user_username_key" ON "system_user"("username");
 

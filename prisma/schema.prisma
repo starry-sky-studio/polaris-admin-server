@@ -352,3 +352,31 @@ model DictionaryItem {
 
   @@map("system_dictionary_item")
 }
+
+/// 文章
+model Article {
+  id           Int        @id @default(autoincrement())
+  author        String    @db.VarChar(50)
+  title        String     @db.VarChar(50)
+  content      String     @db.VarChar(255)
+  /// 阅读量
+  viewCount    Int        @default(0)
+  /// 点赞量
+  likeCount    Int        @default(0)
+  /// 收藏量
+  collectCount Int        @default(0)
+  /// watch 正在观看人数
+  watchCount   Int        @default(0)
+  /// 创建时间
+  createdAt    DateTime?  @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// 创建人
+  createdBy    Int?       @map("created_by")
+  /// 更新时间
+  updatedAt    DateTime?  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// 更新人
+  updatedBy    Int?       @map("updated_by")
+  /// 删除时间
+  deletedAt    DateTime?  @map("deleted_at") @db.Timestamptz(3)
+  /// 删除人
+  deletedBy    Int?       @map("deleted_by")
+}
