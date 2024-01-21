@@ -3,9 +3,11 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { hash } from '@node-rs/bcrypt'
 import { plainToClass } from 'class-transformer'
-import { UserVo } from './vo'
+import { PageUserVo, UserVo } from './vo'
 import { PrismaService } from '@/shared/prisma/prisma.service'
-import { PatchUserDto } from './dto'
+import { PageUserDto, PatchUserDto } from './dto'
+import type { Prisma } from '@prisma/client'
+import _ from 'lodash'
 
 @Injectable()
 export class UserService {
@@ -54,8 +56,48 @@ export class UserService {
     return plainToClass(UserVo, findUser)
   }
 
-  findAll() {
-    return `This action returns all user`
+  async findAll(pageUserDto: PageUserDto) {
+    const { page, pageSize, keywords, startTime, endTime, enabled, id } = pageUserDto
+    const where: Prisma.UserWhereInput = {
+      deletedAt: null,
+      AND: [
+        {
+          createdAt: {
+            ...(startTime && { gte: startTime }),
+            ...(endTime && { lte: endTime })
+          },
+          id: {
+            ...(id && { equals: id })
+          },
+          enabled: {
+            ...(enabled && { equals: enabled })
+          }
+        }
+      ],
+      OR: keywords
+        ? [
+            { id: { equals: _.toNumber(keywords) < 100000 ? _.toNumber(keywords) : 0 } },
+            { username: { contains: keywords } },
+            { email: { contains: keywords } },
+            { nickName: { contains: keywords } },
+            { phoneNumber: { contains: keywords } }
+          ]
+        : undefined
+    }
+
+    const records = await this.prismaService.user.findMany({
+      where,
+      skip: (page - 1) * pageSize,
+      take: Number(pageSize)
+    })
+
+    const total = await this.prismaService.user.count({ where })
+    return plainToClass(PageUserVo, {
+      records,
+      total,
+      page,
+      pageSize
+    })
   }
 
   async patch(id: number, patch: PatchUserDto, updatedBy?: number) {

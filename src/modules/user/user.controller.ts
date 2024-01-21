@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Query } from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Jwt } from '@/decorator'
+import { PageUserDto } from './dto'
 
 @ApiTags('用户管理')
 @Controller('user')
@@ -18,8 +19,8 @@ export class UserController {
 
   @ApiOperation({ summary: '用户列表' })
   @Get()
-  findAll() {
-    return this.userService.findAll()
+  findAll(@Query() pageUserDto: PageUserDto) {
+    return this.userService.findAll(pageUserDto)
   }
 
   @ApiOperation({ summary: '获取用户信息 [id]' })
