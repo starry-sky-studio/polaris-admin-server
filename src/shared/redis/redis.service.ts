@@ -6,6 +6,9 @@ export class RedisService {
   @Inject('REDIS_CLIENT')
   private redisClient: RedisClientType
 
+  // 在线用户缓存时间
+  readonly ONLINE_USER_TTL = 60 * 5
+
   async get(key: string) {
     return await this.redisClient.get(key)
   }
@@ -16,6 +19,21 @@ export class RedisService {
     if (ttl) {
       await this.redisClient.expire(key, ttl)
     }
+  }
+
+  // 是否存在缓存
+  async exists(key: string) {
+    return !!(await this.redisClient.exists(key))
+  }
+
+  // 设置 TTL
+  async expire(key: string, ttl: number) {
+    await this.redisClient.expire(key, ttl)
+  }
+
+  // 删除缓存
+  async del(key: string | string[]) {
+    await this.redisClient.del(key)
   }
 
   // hGetAll 哈希表命令 用于获取指定哈希表中的所有字段和对应的值
