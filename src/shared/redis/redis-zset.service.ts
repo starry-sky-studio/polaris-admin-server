@@ -6,6 +6,7 @@ export class RedisZsetService {
   private redisClient: RedisClientType
 
   async zRankingList(key: string, start: number = 0, end: number = -1) {
+    // 使用await关键字等待zRange方法的结果
     const keys = await this.redisClient.zRange(key, start, end, {
       REV: true
     })

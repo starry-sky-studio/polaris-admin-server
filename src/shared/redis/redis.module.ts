@@ -2,11 +2,12 @@ import { Global, Module } from '@nestjs/common'
 import { RedisService } from './redis.service'
 import { createClient } from 'redis'
 import { ConfigService } from '@nestjs/config'
-
+import { RedisZsetService } from './redis-zset.service'
 @Global()
 @Module({
   providers: [
     RedisService,
+    RedisZsetService,
     {
       provide: 'REDIS_CLIENT',
       async useFactory(configService: ConfigService) {
@@ -25,6 +26,6 @@ import { ConfigService } from '@nestjs/config'
       inject: [ConfigService]
     }
   ],
-  exports: [RedisService]
+  exports: [RedisService, RedisZsetService]
 })
 export class RedisModule {}

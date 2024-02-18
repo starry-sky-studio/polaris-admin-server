@@ -4,8 +4,13 @@ import * as dayjs from 'dayjs'
 
 @Injectable()
 export class RankingService {
-  @Inject(RedisZsetService)
-  redisService: RedisZsetService
+  // @Inject(RedisZsetService)
+  // redisService: RedisZsetService
+
+  constructor(
+    @Inject(RedisZsetService)
+    private readonly redisService: RedisZsetService
+  ) {}
 
   //private关键字可以定义私有成员。私有成员只能在类的内部访问，无法在类外部或子类中直接访问
   private getMonthKey() {

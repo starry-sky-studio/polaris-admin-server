@@ -21,7 +21,7 @@ import { RedisModule } from './shared/redis/redis.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { ScheduleTasksService } from './modules/schedule-tasks/schedule-tasks.service'
 import { ScheduleTasksModule } from './modules/schedule-tasks/schedule-tasks.module'
-import { RankingModule } from './ranking/ranking.module'
+import { RankingModule } from './modules/ranking/ranking.module'
 
 @Module({
   imports: [
