@@ -38,7 +38,7 @@ export class RankingService {
   async getYearRanking() {
     const dateStr = dayjs().format('YYYY')
     const keys = await this.redisService.keys(`learning-ranking-month:${dateStr}-*`)
-
+    console.log(keys, 'keys')
     return this.redisService.zUnion(this.getYearKey(), keys)
   }
 }
